@@ -1,0 +1,11 @@
+# Compiled source #
+###################
+bin
+bin/*
+
+# eclipse config files #
+###################
+.classpath
+.project
+.settings
+.settings/*

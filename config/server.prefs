@@ -1,0 +1,3 @@
+server.name = Kawa
+root = F:/www
+default_encoding = gzip
