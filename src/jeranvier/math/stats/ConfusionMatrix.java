@@ -159,12 +159,12 @@ public class ConfusionMatrix <T>{
 	}
 	
 	//Represents the coordinates of an element of the matrix
-	class Coordinates<T>{
+	class Coordinates<S>{
 		
-		private T actualClass;
-		private T predictedClass;
+		private S actualClass;
+		private S predictedClass;
 
-		public Coordinates(T actualClass, T predictedClass){
+		public Coordinates(S actualClass, S predictedClass){
 			this.actualClass = actualClass;
 			this.predictedClass= predictedClass;
 		}
@@ -182,6 +182,7 @@ public class ConfusionMatrix <T>{
 			return result;
 		}
 
+		@SuppressWarnings("unchecked")
 		@Override
 		public boolean equals(Object obj) {
 			if (this == obj)
@@ -190,7 +191,7 @@ public class ConfusionMatrix <T>{
 				return false;
 			if (getClass() != obj.getClass())
 				return false;
-			Coordinates<T> other = (Coordinates<T>) obj;
+			Coordinates<S> other = (Coordinates<S>) obj;
 			if (!getOuterType().equals(other.getOuterType()))
 				return false;
 			if (actualClass == null) {
@@ -206,7 +207,7 @@ public class ConfusionMatrix <T>{
 			return true;
 		}
 
-		private ConfusionMatrix getOuterType() {
+		private ConfusionMatrix<T> getOuterType() {
 			return ConfusionMatrix.this;
 		}
 	}
