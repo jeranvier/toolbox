@@ -7,7 +7,9 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 
 public class FileLoader<T> {
@@ -60,7 +62,7 @@ public class FileLoader<T> {
 			}
 			br.close();
 		}catch(FileNotFoundException e){
-			System.out.println("File not found");
+			System.out.println("File not found:" +filePath);
 		}
 
 		return list;

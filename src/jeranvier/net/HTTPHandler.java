@@ -27,17 +27,21 @@ public class HTTPHandler implements Runnable{
         try {
             HTTPRequest request = new HTTPRequest(socket.getInputStream());
             HTTPResponse  response = new HTTPResponse(socket.getOutputStream(), request.getHeader());
+            System.out.println(request.getPath());
             if(! HTTPServer.getSecurityManager().isRequestedPathUnderRoot(request.getPath())){
-            	response.setHTTPCode(404);
+            	response.setHTTPCode(403);
+            }else{
+	            switch(request.getMethod()){
+	            case POST: this.handlePost(request, response); break;
+	            case PUT: this.handlePut(request, response); break;
+	            case GET: this.handleGet(request, response); break;
+	            case DELETE: this.handleDelete(request, response); break;
+				default:
+					break;
+	            }
             }
-            System.out.println("been here");
-            switch(request.getMethod()){
-            case POST: this.handlePost(request, response); break;
-            case PUT: this.handlePut(request, response); break;
-            case GET: this.handleGet(request, response); break;
-            case DELETE: this.handleDelete(request, response); break;
-			default:
-				break;
+            if(!(response.getHTTPCode() >=200 && response.getHTTPCode() <300)){ //we need to handle the error
+            	HTTPServer.getErrorHandler().handleError(response.getHTTPCode(), request, response);
             }
             response.sendResponse();
             response.closeStream();

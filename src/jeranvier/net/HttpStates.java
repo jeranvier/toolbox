@@ -28,4 +28,8 @@ public class HttpStates {
 		String state = this.states.get(code);
 		return state != null? state : this.states.get(500);
 	}
+	
+	public int getCode(String state){
+		return states.containsValue(state)? Integer.parseInt(state.substring(0, 3)) : null;
+	}
 }

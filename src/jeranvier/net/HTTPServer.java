@@ -10,6 +10,7 @@ import java.util.Date;
 import java.util.Locale;
 
 import jeranvier.net.example.DefaultHTTPHandler;
+import jeranvier.net.exceptions.ErrorHandler;
 import jeranvier.prefs.Preferences;
 
 public class HTTPServer {
@@ -17,7 +18,8 @@ public class HTTPServer {
 	
 	public enum SERVER_STATUS{STARTING, RUNNING, STOPPING, STOPPED}
 	private SERVER_STATUS status;
-	private static final Preferences globalPrefs = new Preferences("server.prefs");
+	private static ErrorHandler errorHandler;
+	private static final Preferences globalPrefs = new Preferences("config/server.prefs");
 	private static final DateFormat rfc1123Format = new SimpleDateFormat("EEE, dd MMM yyyy HH:mm:ss z", Locale.US);
 	private static SecurityManager securityManager;
 	
@@ -37,6 +39,7 @@ public class HTTPServer {
 		this.status = SERVER_STATUS.STARTING;
 		
 		securityManager = new SecurityManager();
+		errorHandler = new ErrorHandler();
 		
 		@SuppressWarnings("resource")
 		ServerSocket socket = new ServerSocket(port, maxConnections, bindAddr);
@@ -56,7 +59,7 @@ public class HTTPServer {
 	
 	@SuppressWarnings("unused")
 	public static void main(String[] args) throws IOException{
-		HTTPServer server = new HTTPServer(8080, InetAddress.getByName("127.0.0.1"),DefaultHTTPHandler.class);
+		HTTPServer server = new HTTPServer(8080, InetAddress.getByName("128.179.158.81"),DefaultHTTPHandler.class);
 	}
 	
 	public static String getDateRFC1123(){
@@ -69,6 +72,10 @@ public class HTTPServer {
 	
 	public static String getPreference(String key){
 		return globalPrefs.getPreference(key);
+	}
+	
+	public static ErrorHandler getErrorHandler(){
+		return errorHandler;
 	}
 	
 	public static SecurityManager getSecurityManager(){

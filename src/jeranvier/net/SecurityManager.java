@@ -20,4 +20,8 @@ public class SecurityManager {
 			return false;
 		}
 	}
+	
+	public boolean isURITooLarge(URI uri){
+		return uri.getRawPath().length() <= Integer.parseInt(HTTPServer.getPreference("maxSizeURL", "2048"));
+	}
 }

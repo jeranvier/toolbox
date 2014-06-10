@@ -122,6 +122,11 @@ public class HTTPResponse {
      }
 
 	public void setHTTPCode(int code){
+		System.out.println("setting http code to: "+code);
 		this.httpState = httpStates.getState(code);
+	}
+	
+	public int getHTTPCode(){
+		return httpStates.getCode(httpState);
 	}
 }

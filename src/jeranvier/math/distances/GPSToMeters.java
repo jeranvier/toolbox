@@ -25,7 +25,8 @@ public class GPSToMeters {
 		return Math.acos(Math.sin(lat1)*Math.sin(lat2) + Math.cos(lat1)*Math.cos(lat2) * Math.cos(dLon)) * R;
 	}
 	public static void main(String[] arg){
-		System.out.println(GPSToMeters.convertToMeters(new double[]{46.5154553872,6.61630054183}, new double[]{46.5152910181,6.61614271065}));
+		System.out.println(GPSToMeters.convertToMeters(new double[]{48.8648656,2.2767539}, new double[]{48.8648656,2.2795005}));
 		System.out.println(GPSToMeters.convertToAproximateMeters(new double[]{46.5154553872,6.61630054183}, new double[]{46.5152910181,6.61614271065}));
+		System.out.println(GPSToMeters.convertToMeters(new double[]{46.574767256269105,6.8367049793023495}, new double[]{46.5154553872,6.61630054181}));
 	}
 }
