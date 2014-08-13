@@ -117,28 +117,40 @@ public class CSVHandler {
 			return sb.toString();
 		}
 		
-		public int getInt(String fieldName) throws UnknownFieldException{
+		public Integer getInt(String fieldName) throws UnknownFieldException{
 			return getInt(CSVHandler.this.header.getFieldIndex(fieldName));
 		}
 
-		private int getInt(int index) {
-			return Integer.parseInt(values[index]);
+		private Integer getInt(int index) {
+			String string = values[index];
+			if(string.length() == 0)
+				return null;
+			else
+				return Integer.parseInt(string);
 		}
 		
-		public long getLong(String fieldName) throws UnknownFieldException{
+		public Long getLong(String fieldName) throws UnknownFieldException{
 			return getLong(CSVHandler.this.header.getFieldIndex(fieldName));
 		}
 
-		private long getLong(int index) {
-			return Long.parseLong(values[index]);
+		private Long getLong(int index) {
+			String string = values[index];
+			if(string.length() == 0)
+				return null;
+			else
+				return Long.parseLong(string);
 		}
 		
-		public double getDouble(String fieldName) throws UnknownFieldException{
+		public Double getDouble(String fieldName) throws UnknownFieldException{
 			return getDouble(CSVHandler.this.header.getFieldIndex(fieldName));
 		}
 
-		private double getDouble(int index) {
-			return Double.parseDouble(values[index]);
+		private Double getDouble(int index) {
+			String string = values[index];
+			if(string.length() == 0)
+				return null;
+			else
+				return Double.parseDouble(string);
 		}
 		
 		public String getString(String fieldName) throws UnknownFieldException{
@@ -153,16 +165,24 @@ public class CSVHandler {
 			return getChar(CSVHandler.this.header.getFieldIndex(fieldName));
 		}
 
-		private char getChar(int index) {
-			return values[index].charAt(0);
+		private Character getChar(int index) {
+			String string = values[index];
+			if(string.length() == 0)
+				return null;
+			else
+				return values[index].charAt(0);
 		}
 		
 		public boolean getBoolean(String fieldName) throws UnknownFieldException{
 			return getBoolean(CSVHandler.this.header.getFieldIndex(fieldName));
 		}
 
-		private boolean getBoolean(int index) {
-			return Boolean.parseBoolean(values[index]);
+		private Boolean getBoolean(int index) {
+			String string = values[index];
+			if(string.length() == 0)
+				return null;
+			else
+				return Boolean.parseBoolean(values[index]);
 		}
 	}
 	
@@ -193,15 +213,4 @@ public class CSVHandler {
 			return this.fieldsName.indexOf(fieldName);
 		}
 	}
-
-	
-	public static void main(String[] args) throws IOException, UnknownFieldException{
-		CSVHandler csv = new CSVHandler(',', '"', true);
-		csv.loadFile("F:/desktop/export_memorySense.csv");
-		System.out.println(csv.getHeader().toString());
-		System.out.println(csv.getRecord(1));
-		System.out.println(csv.getRecord(1).getLong("event_end_time"));
-		System.out.println(csv.getRecord(1).getLong(1));
-	}
-
 }

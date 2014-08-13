@@ -3,7 +3,7 @@ package jeranvier.math.distances;
 import java.util.Arrays;
 import java.util.List;
 
-import jeranvier.util.MathExtension;
+import jeranvier.math.util.MathExtension;
 
 /**
  * @author ranvier

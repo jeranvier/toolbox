@@ -1,4 +1,4 @@
-package jeranvier.util;
+package jeranvier.math.util;
 
 import java.util.Arrays;
 
