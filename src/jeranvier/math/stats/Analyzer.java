@@ -10,12 +10,13 @@ import jeranvier.math.stats.exceptions.EmptyArrayException;
 
 public class Analyzer <T extends Number> {
 	
-	public T[] data;
-	public double mean;
-	public double variance;
-	public double standardDeviation;
-	public T min;
-	public T max;
+	private T[] data;
+	private double mean;
+	private double variance;
+	private double standardDeviation;
+	private T min;
+	private T max;
+	private Histogram histogram;
 	
 	public Analyzer(T[] data) throws EmptyArrayException{
 		if(data.length <1){
@@ -28,6 +29,7 @@ public class Analyzer <T extends Number> {
 		this.standardDeviation = Double.NaN;
 		this.min = null;
 		this.max = null;
+		this.histogram = null;
 	}
 	
 	public double getMean() {
@@ -45,8 +47,13 @@ public class Analyzer <T extends Number> {
 	public T getMin() {
 		return this.min == null? computeMin(data) : min;
 	}
+	
 	public T getMax() {
 		return this.max == null? computeMax(data) : max;
+	}
+	
+	public Histogram getHistogram(int numberOfBins){
+		return this.histogram == null? computeHistogram(data, numberOfBins) : histogram;
 	}
 	
 	public T computeMin(T[] data) {
@@ -63,7 +70,7 @@ public class Analyzer <T extends Number> {
 
 
 	private double computeMean(T[] data) {
-		double mean = 0.0;
+		mean = 0.0;
 		
 		for(Number n : data){
 			mean += n.doubleValue();
@@ -73,7 +80,7 @@ public class Analyzer <T extends Number> {
 	}
 	
 	private double computeVariance(T[] data, double mean){
-		double variance = 0.0;
+		variance = 0.0;
 				
 		for(Number n : data){
 			variance += Math.pow(n.doubleValue()-mean, 2);
@@ -83,7 +90,14 @@ public class Analyzer <T extends Number> {
 	}
 	
 	private double computeStandardDeviation(double variance){
-		return Math.sqrt(variance);
+		this.standardDeviation = Math.sqrt(variance);
+		return standardDeviation;
+	}
+	
+	public Histogram computeHistogram(T[] data, int numberOfBins){
+		this.histogram = new Histogram(numberOfBins);
+		this.histogram.populate(data);
+		return this.histogram;
 	}
 	
 	public String displayData(){
