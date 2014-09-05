@@ -9,6 +9,8 @@ import java.util.List;
 
 public class CSVHandler {
 	
+	public static final char TAB = '\t';
+	public static final char EMPTY = '\u0000';
 	private char separator;
 	private char quote;
 	private boolean headerAvailable;

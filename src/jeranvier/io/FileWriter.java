@@ -17,7 +17,7 @@ public class FileWriter {
 		this.printWriter = null;
 		
 		File file = new File(filePath);
-		 
+		file.mkdirs();
 		if (!file.exists()) {
 			try {
 				file.createNewFile();

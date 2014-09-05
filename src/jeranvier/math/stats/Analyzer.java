@@ -121,6 +121,7 @@ public class Analyzer <T extends Number> {
 		System.out.println("Standard deviation: "+analyzer.getStandardDeviation());
 		System.out.println("Min: "+analyzer.getMin());
 		System.out.println("Max: "+analyzer.getMax());
+		System.out.println("Max: "+analyzer.getHistogram(10));
 	}
 
 }
