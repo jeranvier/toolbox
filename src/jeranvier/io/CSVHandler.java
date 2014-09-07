@@ -34,12 +34,13 @@ public class CSVHandler {
 				header = parseHeader(line);
 				numberOfFields = header.getNumberOfFields();
 			}
+			
 			while ((line = br.readLine()) != null) {
 				records.add(parseRecord(line));
 			}
 			br.close();
 		}catch(FileNotFoundException e){
-			System.out.println("File not found:" +filePath);
+			System.out.println("File not found: " +filePath);
 		}
 	}
 	
@@ -123,7 +124,7 @@ public class CSVHandler {
 			return getInt(CSVHandler.this.header.getFieldIndex(fieldName));
 		}
 
-		private Integer getInt(int index) {
+		public Integer getInt(int index) {
 			String string = values[index];
 			if(string.length() == 0)
 				return null;
@@ -135,7 +136,7 @@ public class CSVHandler {
 			return getLong(CSVHandler.this.header.getFieldIndex(fieldName));
 		}
 
-		private Long getLong(int index) {
+		public Long getLong(int index) {
 			String string = values[index];
 			if(string.length() == 0)
 				return null;
@@ -147,7 +148,7 @@ public class CSVHandler {
 			return getDouble(CSVHandler.this.header.getFieldIndex(fieldName));
 		}
 
-		private Double getDouble(int index) {
+		public Double getDouble(int index) {
 			String string = values[index];
 			if(string.length() == 0)
 				return null;
@@ -159,7 +160,7 @@ public class CSVHandler {
 			return getString(CSVHandler.this.header.getFieldIndex(fieldName));
 		}
 
-		private String getString(int index) {
+		public String getString(int index) {
 			return values[index];
 		}
 		
@@ -167,7 +168,7 @@ public class CSVHandler {
 			return getChar(CSVHandler.this.header.getFieldIndex(fieldName));
 		}
 
-		private Character getChar(int index) {
+		public Character getChar(int index) {
 			String string = values[index];
 			if(string.length() == 0)
 				return null;
@@ -179,7 +180,7 @@ public class CSVHandler {
 			return getBoolean(CSVHandler.this.header.getFieldIndex(fieldName));
 		}
 
-		private Boolean getBoolean(int index) {
+		public Boolean getBoolean(int index) {
 			String string = values[index];
 			if(string.length() == 0)
 				return null;
