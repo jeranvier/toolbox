@@ -111,7 +111,7 @@ public class Analyzer <T extends Number> {
 		sb.append("]");
 		return sb.toString();
 	}
-
+	
 	public static void main(String[] args) throws EmptyArrayException{
 		Integer[] data = new Integer[]{5,2,7,9,4,4,4,5};
 		Analyzer<Integer> analyzer = new Analyzer<Integer>(data);
@@ -121,7 +121,7 @@ public class Analyzer <T extends Number> {
 		System.out.println("Standard deviation: "+analyzer.getStandardDeviation());
 		System.out.println("Min: "+analyzer.getMin());
 		System.out.println("Max: "+analyzer.getMax());
-		System.out.println("Max: "+analyzer.getHistogram(10));
+		System.out.println("histo: "+analyzer.getHistogram(10));
 	}
 
 }

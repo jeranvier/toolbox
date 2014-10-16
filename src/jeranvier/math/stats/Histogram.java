@@ -1,6 +1,7 @@
 package jeranvier.math.stats;
 
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.TreeMap;
@@ -11,9 +12,11 @@ public class Histogram {
 	private Map<Double,Integer> bins;
 	private double step;
 	private int total;
+	private boolean normalized;
 
 	public Histogram(int numberOfBins){
 		this.numberOfBins = numberOfBins;
+		this.normalized = true;
 	}
 	
 	private void determinateBuckets(int numberOfBins, Number min, Number max){
@@ -45,15 +48,29 @@ public class Histogram {
 		
 	}
 	
+	public void populate(Collection< ? extends Number> data){
+		Number[] array = new Number[data.size()];
+		int i = 0;
+		for(Number number : data){
+			array[i] = number;
+			i++;
+		}
+		populate(array);
+	}
+	
 	public String toString(){
 		StringBuilder  sb = new StringBuilder();
 		for(Entry<Double, Integer> bin : bins.entrySet()){
 			sb.append(bin.getKey());
 			sb.append("\t");
-			sb.append(((double)bin.getValue())/total);
+			sb.append(((double)bin.getValue())/(normalized?total:1));
 			sb.append("\n");
 		}
 		return sb.toString();
+	}
+	
+	public void setNormalized(boolean normalized){
+		this.normalized = normalized;
 	}
 
 }

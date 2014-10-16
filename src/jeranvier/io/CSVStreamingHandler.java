@@ -7,44 +7,71 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class CSVHandler {
-	
-	public static final char TAB = '\t';
-	public static final char EMPTY = '\u0000';
-	public static final char COMMA = ',';
+public class CSVStreamingHandler{
 	private char separator;
 	private char quote;
 	private boolean headerAvailable;
 	private List<Record> records;
 	private Header header;
 	private int numberOfFields;
-	private boolean stillReading;
+	private BufferedReader br;
+	private Record next;
 	
-	public CSVHandler(char separator, char quote, boolean headerAvailable){
+	public CSVStreamingHandler(char separator, char quote, boolean headerAvailable, String filePath) throws FileNotFoundException{
 		this.separator = separator;
 		this.quote = quote;
 		this.headerAvailable = headerAvailable;
 		this.records = new ArrayList<Record>();
-	}
-	
-	public void loadFile(String filePath) throws IOException{
-		stillReading = true;
-		try{
-			BufferedReader br = new BufferedReader(new FileReader(filePath));
-			String line;
-			if(headerAvailable){
-				line = br.readLine();
-				header = parseHeader(line);
+		this.br = new BufferedReader(new FileReader(filePath));
+		try {
+			if(this.headerAvailable){
+				header = parseHeader(br.readLine());
 				numberOfFields = header.getNumberOfFields();
 			}
-			
-			while ((line = br.readLine()) != null) {
-				records.add(parseRecord(line));
-			}
+		} catch (IOException e) {
+			System.err.println("Error while parsing the header of: "+filePath);
+			e.printStackTrace();
+		}
+		this.next = readNext();
+	}
+	
+	public Record next(){
+		if(this.next==null){
+			return null;
+		}
+		Record toReturn = this.next;
+		this.next = readNext();
+		if(this.next == null){
+			closeStream();
+		}
+		return toReturn;
+	}
+	
+	public boolean hasNext(){
+		return this.next!=null;
+	}
+	
+	private Record readNext(){
+		String line = null;
+		try {
+			line = br.readLine();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		
+		if(line == null){
+			return null;
+		}
+		else{
+			return parseRecord(line);
+		}
+	}
+	
+	public void closeStream(){
+		try {
 			br.close();
-			stillReading = false;
-		}catch(FileNotFoundException e){
-			System.out.println("File not found: " +filePath);
+		} catch (IOException e) {
+			e.printStackTrace();
 		}
 	}
 	
@@ -118,14 +145,14 @@ public class CSVHandler {
 			for(int i=0; i<values.length; i++){
 				sb.append(values[i]);
 				if(i != values.length-1){
-					sb.append(CSVHandler.this.separator);
+					sb.append(CSVStreamingHandler.this.separator);
 				}
 			}
 			return sb.toString();
 		}
 		
 		public Integer getInt(String fieldName) throws UnknownFieldException{
-			return getInt(CSVHandler.this.header.getFieldIndex(fieldName));
+			return getInt(CSVStreamingHandler.this.header.getFieldIndex(fieldName));
 		}
 
 		public Integer getInt(int index) {
@@ -137,7 +164,7 @@ public class CSVHandler {
 		}
 		
 		public Long getLong(String fieldName) throws UnknownFieldException{
-			return getLong(CSVHandler.this.header.getFieldIndex(fieldName));
+			return getLong(CSVStreamingHandler.this.header.getFieldIndex(fieldName));
 		}
 
 		public Long getLong(int index) {
@@ -149,7 +176,7 @@ public class CSVHandler {
 		}
 		
 		public Double getDouble(String fieldName) throws UnknownFieldException{
-			return getDouble(CSVHandler.this.header.getFieldIndex(fieldName));
+			return getDouble(CSVStreamingHandler.this.header.getFieldIndex(fieldName));
 		}
 
 		public Double getDouble(int index) {
@@ -161,7 +188,7 @@ public class CSVHandler {
 		}
 		
 		public String getString(String fieldName) throws UnknownFieldException{
-			return getString(CSVHandler.this.header.getFieldIndex(fieldName));
+			return getString(CSVStreamingHandler.this.header.getFieldIndex(fieldName));
 		}
 
 		public String getString(int index) {
@@ -169,7 +196,7 @@ public class CSVHandler {
 		}
 		
 		public char getChar(String fieldName) throws UnknownFieldException{
-			return getChar(CSVHandler.this.header.getFieldIndex(fieldName));
+			return getChar(CSVStreamingHandler.this.header.getFieldIndex(fieldName));
 		}
 
 		public Character getChar(int index) {
@@ -181,7 +208,7 @@ public class CSVHandler {
 		}
 		
 		public boolean getBoolean(String fieldName) throws UnknownFieldException{
-			return getBoolean(CSVHandler.this.header.getFieldIndex(fieldName));
+			return getBoolean(CSVStreamingHandler.this.header.getFieldIndex(fieldName));
 		}
 
 		public Boolean getBoolean(int index) {
@@ -210,7 +237,7 @@ public class CSVHandler {
 			for(int i=0; i<fieldsName.size(); i++){
 				sb.append(fieldsName.get(i));
 				if(i != fieldsName.size()-1){
-					sb.append(CSVHandler.this.separator);
+					sb.append(CSVStreamingHandler.this.separator);
 				}
 			}
 			return sb.toString();
