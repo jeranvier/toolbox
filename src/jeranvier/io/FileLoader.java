@@ -75,7 +75,7 @@ public class FileLoader<T> {
 		String line;
 		
 		while ((line = br.readLine()) != null) {
-			fileBuilder.append("\r\n");
+			fileBuilder.append(System.lineSeparator());
 			fileBuilder.append(line);
 		}
 		
