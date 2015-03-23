@@ -69,12 +69,4 @@ public class MathExtension {
 		return candidates[candidates.length-1];
 	}
 	
-	public static double average(Collection<? extends Number> collection){
-		double sum = 0;
-		for(Number item : collection){
-			sum += (double)item;
-		}
-		return sum/collection.size();
-	}
-	
 }
