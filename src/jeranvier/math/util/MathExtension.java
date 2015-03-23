@@ -1,6 +1,11 @@
 package jeranvier.math.util;
 
 import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class MathExtension {
 	
@@ -63,4 +68,13 @@ public class MathExtension {
 		Arrays.sort(candidates);
 		return candidates[candidates.length-1];
 	}
+	
+	public static double average(Collection<? extends Number> collection){
+		double sum = 0;
+		for(Number item : collection){
+			sum += (double)item;
+		}
+		return sum/collection.size();
+	}
+	
 }

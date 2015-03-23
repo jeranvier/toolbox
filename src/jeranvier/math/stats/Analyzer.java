@@ -2,6 +2,7 @@ package jeranvier.math.stats;
 
 import java.lang.reflect.Method;
 import java.util.Arrays;
+import java.util.List;
 
 import jeranvier.math.stats.exceptions.EmptyArrayException;
 
@@ -22,8 +23,11 @@ public class Analyzer <T extends Number> {
 		if(data.length <1){
 			throw new EmptyArrayException();
 		}
-		
 		this.data = data;
+		init();
+	}
+	
+	private void init(){
 		this.mean = Double.NaN;
 		this.variance = Double.NaN;
 		this.standardDeviation = Double.NaN;
