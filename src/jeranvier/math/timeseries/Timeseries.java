@@ -9,6 +9,7 @@ import java.util.Queue;
 import java.util.TreeMap;
 import java.util.concurrent.ArrayBlockingQueue;
 
+import jeranvier.math.stats.SimpleStats;
 import jeranvier.math.util.MathExtension;
 
 public class Timeseries extends TreeMap<Long,Double>{
@@ -66,7 +67,7 @@ public class Timeseries extends TreeMap<Long,Double>{
 			window.add(entry.getValue());
 			
 			if(window.size() == windowLength){
-				ts.put(times.poll(), MathExtension.average((Collection<? extends Number>) window));
+				ts.put(times.poll(), SimpleStats.mean((Collection<? extends Number>) window));
 				window.poll();
 			}
 			
