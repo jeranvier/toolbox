@@ -5,9 +5,12 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Queue;
+import java.util.SortedMap;
 import java.util.TreeMap;
 import java.util.concurrent.ArrayBlockingQueue;
+import java.util.function.BiFunction;
 
 import jeranvier.math.stats.SimpleStats;
 import jeranvier.math.util.MathExtension;
@@ -16,12 +19,8 @@ public class Timeseries extends TreeMap<Long,Double>{
 	private static final long serialVersionUID = 1L;
 	public static enum AVERAGE_TYPE{CENTERED, DELAYED, AHEAD};
 	
-	public Timeseries(){
-		super();
-	}
-	
-	public Timeseries(Timeseries toCopy){
-		super(toCopy);
+	public Timeseries(Map<Long,Double> data){
+		super(data);
 	}
 
 	@Override
@@ -34,30 +33,30 @@ public class Timeseries extends TreeMap<Long,Double>{
 	}
 	
 	public Timeseries subTimeseries(Long start, Long end){
-		 Timeseries ts = new  Timeseries();
+		 Builder tsb = new Timeseries.Builder();
 		 for(Map.Entry<Long, Double> element : this.entrySet()){
 			 if(element.getKey() > start && element.getKey() < end){
-				 ts.put(element.getKey(), element.getValue());
+				 tsb.put(element.getKey(), element.getValue());
 			 }
 		 }
-		 return ts;
+		 return tsb.build();
 	}
 
 	public Timeseries max(int maxValue) {
-		Timeseries ts = new  Timeseries();
+		 Builder tsb = new Timeseries.Builder();
 		Iterator<Map.Entry<Long, Double>> ite = this.entrySet().iterator();
 		while(ite.hasNext()){
 			Map.Entry<Long, Double> element = ite.next();
 			 if((Double)element.getValue() <= maxValue){
-				 ts.put(element.getKey(), element.getValue());
+				 tsb.put(element.getKey(), element.getValue());
 			 }
 		 }
-		 return ts;
+		 return tsb.build();
 	}
 	
 	public Timeseries movingAverage(int radius, AVERAGE_TYPE type){
 		int windowLength = 2 * radius + 1;
-		Timeseries ts = new  Timeseries();
+		Builder tsb = new Timeseries.Builder();
 		Queue<Double> window = new ArrayBlockingQueue<Double>(windowLength);
 		Queue<Long> times = new ArrayBlockingQueue<Long>(radius +1);
 		for(Map.Entry<Long, Double> entry : this.entrySet()){
@@ -67,7 +66,7 @@ public class Timeseries extends TreeMap<Long,Double>{
 			window.add(entry.getValue());
 			
 			if(window.size() == windowLength){
-				ts.put(times.poll(), SimpleStats.mean((Collection<? extends Number>) window));
+				tsb.put(times.poll(), SimpleStats.mean((Collection<? extends Number>) window));
 				window.poll();
 			}
 			
@@ -76,43 +75,39 @@ public class Timeseries extends TreeMap<Long,Double>{
 			}
 		}
 		
-		return ts;
+		return tsb.build();
 	}
 	
 	public Timeseries add(double value){
-		Timeseries result = new Timeseries(this);
-		
-		for(Map.Entry<Long, Double> entry : result.entrySet()){
-			entry.setValue(entry.getValue() + value);
+		 Builder tsb = new Timeseries.Builder();		
+		for(Map.Entry<Long, Double> entry : this.entrySet()){
+			tsb.put(entry.getKey(), entry.getValue() + value);
 		}
-		return result;
+		return tsb.build();
 	}
 	
 	public Timeseries substract(double value){
-		Timeseries result = new Timeseries(this);
-		
-		for(Map.Entry<Long, Double> entry : result.entrySet()){
-			entry.setValue(entry.getValue() - value);
-		}
-		return result;
+		 Builder tsb = new Timeseries.Builder();		
+			for(Map.Entry<Long, Double> entry : this.entrySet()){
+				tsb.put(entry.getKey(), entry.getValue() - value);
+			}
+			return tsb.build();
 	}
 	
 	public Timeseries divide(double value){
-		Timeseries result = new Timeseries(this);
-		
-		for(Map.Entry<Long, Double> entry : result.entrySet()){
-			entry.setValue(entry.getValue() / value);
-		}
-		return result;
+		 Builder tsb = new Timeseries.Builder();		
+			for(Map.Entry<Long, Double> entry : this.entrySet()){
+				tsb.put(entry.getKey(), entry.getValue() / value);
+			}
+			return tsb.build();
 	}
 	
 	public Timeseries multiply(double value){
-		Timeseries result = new Timeseries(this);
-		
-		for(Map.Entry<Long, Double> entry : result.entrySet()){
-			entry.setValue(entry.getValue() * value);
+		Builder tsb = new Timeseries.Builder();		
+		for(Map.Entry<Long, Double> entry : this.entrySet()){
+			tsb.put(entry.getKey(), entry.getValue() * value);
 		}
-		return result;
+		return tsb.build();
 	}
 	
 	public Timeseries substract(Map<Long, Double> values){
@@ -120,24 +115,40 @@ public class Timeseries extends TreeMap<Long,Double>{
 			throw new IllegalArgumentException("operation on timeseries of different sizes");
 		}
 		
-		Timeseries result = new Timeseries(this);
+		Builder tsb = new Timeseries.Builder();
 		
-		for(Map.Entry<Long, Double> entry : result.entrySet()){
-			entry.setValue(entry.getValue() - values.get(entry.getKey()));
+		for(Map.Entry<Long, Double> entry : this.entrySet()){
+			tsb.put(entry.getKey(), entry.getValue() - values.get(entry.getKey()));
 		}
-		return result;
+		return tsb.build();
 	}
 	
 	public Timeseries add(Map<Long, Double> values){
 		if(this.size() != values.size()){
 			throw new IllegalArgumentException("operation on timeseries of different sizes");
 		}
-		Timeseries result = new Timeseries(this);
-		
-		for(Map.Entry<Long, Double> entry : result.entrySet()){
-			entry.setValue(entry.getValue() + values.get(entry.getKey()));
+
+		Builder tsb = new Timeseries.Builder();
+
+		for(Map.Entry<Long, Double> entry : this.entrySet()){
+			tsb.put(entry.getKey(), entry.getValue() + values.get(entry.getKey()));
 		}
-		return result;
+		return tsb.build();
+	}
+	
+	public static final class Builder{
+		SortedMap<Long, Double> data;
+		public Builder(){
+			data = new TreeMap<>();
+		}
+
+		public void put(Long key, Double value) {
+			data.put(key, value);
+		}
+
+		public Timeseries build() {
+			return new Timeseries(data);
+		}
 	}
 	
 }
