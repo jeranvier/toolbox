@@ -1,0 +1,241 @@
+package jeranvier.math.linearAlgebra;
+
+import jeranvier.math.util.Complex;
+
+public class Matrix implements MatrixOperations<Matrix>{
+	
+	private final Complex[][] data;
+	private final int rows;
+	private final int columns;
+	
+	private Matrix(Complex[][] data){
+		this.data = data;
+		this.rows = data.length;
+		this.columns = data[0].length;
+	}
+	
+	public Complex get(int row, int column){
+		return this.data[row-1][column-1];
+	}
+	
+	public double getRe(int row, int column){
+		return this.data[row-1][column-1].a();
+	}
+	
+	public Matrix transpose(){
+		Builder mb = new Builder(columns, rows);
+		
+		for(int rowIndex=0; rowIndex<rows; rowIndex++){
+			for(int columnIndex=0; columnIndex < columns; columnIndex++){
+				mb.set(columnIndex+1, rowIndex+1, this.data[rowIndex][columnIndex]);
+			}
+		}
+		
+		return mb.build();
+	}
+	
+	public String toString(){
+		StringBuilder sb = new StringBuilder();
+		for(Complex[] row: data){
+			for(Complex element: row){
+				sb.append(element+"\t");
+			}
+			sb.deleteCharAt(sb.length()-1);
+			sb.append("\n");
+		}
+		sb.deleteCharAt(sb.length()-1);
+		return sb.toString();
+	}
+	
+	private boolean sameDimension(Matrix matrix, Matrix that) {
+		return this.rows==that.rows && that.columns==that.columns;
+	}
+
+	@Override
+	public Matrix add(Matrix that) throws IllegalArgumentException {
+		if(!sameDimension(this, that)){
+			throw new IllegalArgumentException();
+		}
+		Matrix.Builder mb = new Matrix.Builder(rows, columns);
+		for(int rowIndex=0; rowIndex<rows; rowIndex++){
+			for(int columnIndex=0; columnIndex<columns; columnIndex++){
+				mb.set(rowIndex+1, columnIndex+1, this.data[rowIndex][columnIndex].add(that.data[rowIndex][columnIndex]));
+			}
+		}
+		return mb.build();
+	}
+
+	@Override
+	public Matrix substract(Matrix that) throws IllegalArgumentException {
+		if(!sameDimension(this, that)){
+			throw new IllegalArgumentException();
+		}
+		Matrix.Builder mb = new Matrix.Builder(rows, columns);
+		for(int rowIndex=0; rowIndex<rows; rowIndex++){
+			for(int columnIndex=0; columnIndex<columns; columnIndex++){
+				mb.set(rowIndex+1, columnIndex+1, this.data[rowIndex][columnIndex].substract(that.data[rowIndex][columnIndex]));
+			}
+		}
+		return mb.build();
+	}
+
+	@Override
+	public Matrix multiplyBy(Matrix that) throws IllegalArgumentException {
+		if(this.columns != that.rows){
+			throw new IllegalArgumentException();
+		}
+		Matrix.Builder mb = new Matrix.Builder(this.rows, that.columns);
+		for(int i=0; i<this.rows; i++){
+			for(int j=0; j<that.columns; j++){
+				Complex c = new Complex(0, 0);
+				for(int k=0; k<this.columns; k++){
+					c = c.add(this.data[i][k].multiplyBy(that.data[k][j]));
+				}
+				mb.set(i+1, j+1, c);
+			}
+		}
+		return mb.build();
+	}
+
+	@Override
+	public Matrix divideBy(Matrix that) throws IllegalArgumentException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Matrix add(double n){
+		Matrix.Builder mb = new Matrix.Builder(rows, columns);
+		for(int rowIndex=0; rowIndex<rows; rowIndex++){
+			for(int columnIndex=0; columnIndex<columns; columnIndex++){
+				mb.set(rowIndex+1, columnIndex+1, this.data[rowIndex][columnIndex].add(n));
+			}
+		}
+		return mb.build();
+	}
+
+	@Override
+	public Matrix substract(double n){
+		Matrix.Builder mb = new Matrix.Builder(rows, columns);
+		for(int rowIndex=0; rowIndex<rows; rowIndex++){
+			for(int columnIndex=0; columnIndex<columns; columnIndex++){
+				mb.set(rowIndex+1, columnIndex+1, this.data[rowIndex][columnIndex].substract(n));
+			}
+		}
+		return mb.build();
+	}
+
+	@Override
+	public Matrix multiplyBy(double n){
+		Matrix.Builder mb = new Matrix.Builder(rows, columns);
+		for(int rowIndex=0; rowIndex<rows; rowIndex++){
+			for(int columnIndex=0; columnIndex<columns; columnIndex++){
+				mb.set(rowIndex+1, columnIndex+1, this.data[rowIndex][columnIndex].multiplyBy(n));
+			}
+		}
+		return mb.build();
+	}
+
+	@Override
+	public Matrix divideBy(double n) throws IllegalArgumentException {
+		if(Double.compare(n, 0d)==0){
+			throw new IllegalArgumentException();
+		}
+		Matrix.Builder mb = new Matrix.Builder(rows, columns);
+		for(int rowIndex=0; rowIndex<rows; rowIndex++){
+			for(int columnIndex=0; columnIndex<columns; columnIndex++){
+				mb.set(rowIndex+1, columnIndex+1, this.data[rowIndex][columnIndex].divideBy(n));
+			}
+		}
+		return mb.build();
+	}
+	
+	@Override
+	public Complex determinant() throws IllegalArgumentException{
+		if(this.rows != this.columns){
+			throw new IllegalArgumentException("Matrix not squared");
+		}
+		Matrix lowerTrangular = computerLowerTriangular();
+		Complex product = new Complex(1, 0);
+		for(int i=0; i<this.rows; i++){
+			product = product.multiplyBy(lowerTrangular.data[i][i]);
+		}
+		return product;
+	}
+	
+	public Matrix computerLowerTriangular() {
+		Builder mb = new Builder(this.data);
+		for(int i=2; i<=mb.columns; i++){
+			for(int k=1; k<i; k++){
+				Complex coeff = mb.get(k,i).divideBy(mb.get(k, k));
+				for(int j=1; j<=mb.rows; j++){
+					mb.set(j, i, mb.get(j, i).substract(coeff.multiplyBy(mb.get(j, k))));
+				}
+			}
+		}		
+		return mb.build();
+	}
+
+	public static final class Builder{
+		private Complex[][] data;
+		private int rows;
+		private int columns;
+		
+		public Builder(int rows, int columns){
+			this.data = new Complex[rows][columns];
+			this.rows = rows;
+			this.columns = columns;
+		}
+		
+		public Builder(Complex[][] data){
+			this.data = data;
+			this.rows = data.length;
+			this.columns = data[0].length;
+		}
+		
+		public void set(int row, int column, Complex value){
+			this.data[row-1][column-1] = value;
+		}
+		
+		public void set(int row, int column, double value){
+			this.data[row-1][column-1] = new Complex(value, 0d);
+		}
+		
+		public Complex get(int row, int column){
+			return this.data[row-1][column-1];
+		}
+		
+		public Matrix build(){
+			return new Matrix(data);
+		}
+
+		public void setAll(Complex[] values) {
+			if(values.length != rows*columns){
+				throw new IllegalArgumentException("Wrong number of elements. got "+values.length+", expected "+rows*columns);
+			}
+			
+			int i = 0;
+			for(int rowIndex=0; rowIndex<rows; rowIndex++){
+				for(int columnIndex=0; columnIndex<columns; columnIndex++){
+					data[rowIndex][columnIndex] = values[i];
+					i++;
+				}
+			}
+		}
+
+		public void setAll(double[] values) {
+			if(values.length != rows*columns){
+				throw new IllegalArgumentException("Wrong number of elements. got "+values.length+", expected "+rows*columns);
+			}
+			
+			int i = 0;
+			for(int rowIndex=0; rowIndex<rows; rowIndex++){
+				for(int columnIndex=0; columnIndex<columns; columnIndex++){
+					data[rowIndex][columnIndex] = new Complex(values[i], 0);
+					i++;
+				}
+			}
+		}
+	}
+
+}
