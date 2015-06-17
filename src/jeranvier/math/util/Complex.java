@@ -30,6 +30,14 @@ public class Complex{
 		return this.b;
 	}
 	
+	public double r(){
+		return Math.sqrt(a*a+b*b);
+	}
+	
+	public double phi(){
+		return Math.atan2(b, a);
+	}
+	
 	public boolean isReal(){
 		return Double.compare(b+0d, 0d) == 0;
 	}
