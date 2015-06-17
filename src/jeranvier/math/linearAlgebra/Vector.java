@@ -3,11 +3,15 @@ package jeranvier.math.linearAlgebra;
 import jeranvier.math.util.Complex;
 
 public class Vector extends Matrix{
-
+	
 	private Vector(Complex[][] data){
 		super(data);
 	}
 	
+	public int size(){
+		return this.data[0].length;
+	}
+
 	public static final class Builder extends Matrix.Builder{
 		
 		public Builder(int size){

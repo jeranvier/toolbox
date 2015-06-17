@@ -4,7 +4,7 @@ import jeranvier.math.util.Complex;
 
 public class Matrix implements MatrixOperations<Matrix>{
 	
-	private final Complex[][] data;
+	protected final Complex[][] data;
 	private final int rows;
 	private final int columns;
 	
