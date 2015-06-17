@@ -36,7 +36,7 @@ public class Complex{
 	
 	@Override
 	public String toString(){
-		return formatter.format(a)+(isReal()?("+i"+formatter.format(b)):"");
+		return formatter.format(a)+(!isReal()?("+i"+formatter.format(b)):"");
 	}
 
 	public Complex substract(Complex that) {
