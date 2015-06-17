@@ -8,7 +8,7 @@ public class Matrix implements MatrixOperations<Matrix>{
 	private final int rows;
 	private final int columns;
 	
-	private Matrix(Complex[][] data){
+	protected Matrix(Complex[][] data){
 		this.data = data;
 		this.rows = data.length;
 		this.columns = data[0].length;
@@ -176,10 +176,10 @@ public class Matrix implements MatrixOperations<Matrix>{
 		return mb.build();
 	}
 
-	public static final class Builder{
-		private Complex[][] data;
-		private int rows;
-		private int columns;
+	public static class Builder{
+		protected Complex[][] data;
+		protected int rows;
+		protected int columns;
 		
 		public Builder(int rows, int columns){
 			this.data = new Complex[rows][columns];
