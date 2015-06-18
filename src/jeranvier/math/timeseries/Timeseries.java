@@ -11,6 +11,7 @@ import java.util.SortedMap;
 import java.util.TreeMap;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.function.BiFunction;
+import java.util.function.Function;
 
 import jeranvier.math.stats.SimpleStats;
 import jeranvier.math.util.MathExtension;
@@ -136,6 +137,23 @@ public class Timeseries extends TreeMap<Long,Double>{
 		return tsb.build();
 	}
 	
+	public Timeseries resample(long start, long end, long step, Resampler<Long, Double> resampler){
+		Builder tsb = new Timeseries.Builder();
+		for(long i = start; i <= end; i+=step){
+			tsb.put(i, get(i, resampler));
+		}
+		return tsb.build();
+	}
+	
+	private Double get(long key, Resampler<Long, Double> resampler) {
+		if(this.containsKey(key)){
+			return get(key);
+		}
+		else{
+			return resampler.interpolate(this.floorEntry(key), key, this.ceilingEntry(key));
+		}
+	}
+
 	public static final class Builder{
 		SortedMap<Long, Double> data;
 		public Builder(){
