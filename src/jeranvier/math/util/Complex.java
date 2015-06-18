@@ -3,7 +3,7 @@ package jeranvier.math.util;
 import java.text.DecimalFormat;
 
 public class Complex{
-	
+	private static final double DELTA = 1e-15;
 	private final double a;
 	private final double b;
 	private static final DecimalFormat formatter = new DecimalFormat("###0.###");
@@ -12,6 +12,11 @@ public class Complex{
 	public Complex(double a, double b){
 		this.a = a ;
 		this.b = b;
+	}
+	
+	public Complex(){
+		this.a = 0 ;
+		this.b = 0;
 	}
 	
 	public double a(){
@@ -39,7 +44,7 @@ public class Complex{
 	}
 	
 	public boolean isReal(){
-		return Double.compare(b+0d, 0d) == 0;
+		return b*b < DELTA;
 	}
 	
 	@Override
@@ -53,6 +58,10 @@ public class Complex{
 
 	public Complex add(Complex that) {
 		return new Complex(this.a+that.a, this.b+that.b);
+	}
+	
+	public Complex add(double a, double b) {
+		return new Complex(this.a+a, this.b+b);
 	}
 
 	public Complex multiplyBy(Complex that) {
