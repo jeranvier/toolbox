@@ -1,23 +1,20 @@
 package jeranvier.math.timeseries;
 
+import java.io.Serializable;
 import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.Queue;
 import java.util.SortedMap;
 import java.util.TreeMap;
 import java.util.concurrent.ArrayBlockingQueue;
-import java.util.function.BiFunction;
-import java.util.function.Function;
 
 import jeranvier.math.stats.SimpleStats;
-import jeranvier.math.util.MathExtension;
 
-public class Timeseries extends TreeMap<Long,Double>{
-	private static final long serialVersionUID = 1L;
+public class Timeseries extends TreeMap<Long,Double> implements Serializable{
+
+	private static final long serialVersionUID = -4556555657603027141L;
+
 	public static enum AVERAGE_TYPE{CENTERED, DELAYED, AHEAD};
 	
 	public Timeseries(Map<Long,Double> data){

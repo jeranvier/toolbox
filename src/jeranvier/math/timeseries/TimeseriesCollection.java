@@ -1,5 +1,6 @@
 package jeranvier.math.timeseries;
 
+import java.io.Serializable;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
@@ -7,8 +8,9 @@ import java.util.Map.Entry;
 import java.util.SortedMap;
 import java.util.TreeMap;
 
-public class TimeseriesCollection{
-	
+public class TimeseriesCollection implements Serializable{
+
+	private static final long serialVersionUID = 1484279538252898170L;
 	private final SortedMap<Long,Map<Integer, Double>> data; // <timestamp, <column id, value>>
 	private final Map<String, Integer> labels;
 		
