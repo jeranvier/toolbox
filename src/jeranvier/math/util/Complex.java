@@ -49,7 +49,7 @@ public class Complex{
 	
 	@Override
 	public String toString(){
-		return formatter.format(a)+(!isReal()?("+i"+formatter.format(b)):"");
+		return formatter.format(a)+(!isReal()?("+"+formatter.format(b)):"")+"i";
 	}
 
 	public Complex substract(Complex that) {
@@ -71,6 +71,10 @@ public class Complex{
 	public Complex divideBy(Complex denominator) {
 		return new Complex((this.a*denominator.a + this.b*denominator.b)/(denominator.a*denominator.a + denominator.b*denominator.b)
 				,(this.b*denominator.a - this.a*denominator.b)/(denominator.a*denominator.a + denominator.b*denominator.b));
+	}
+	
+	public Complex conjugate() {
+		return new Complex(a , -1*b);
 	}
 
 	public Complex add(double n) {

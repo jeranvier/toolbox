@@ -6,7 +6,7 @@ public class Matrix implements MatrixOperations<Matrix>{
 	
 	protected final Complex[][] data;
 	private final int rows;
-	private final int columns;
+	protected final int columns;
 	
 	protected Matrix(Complex[][] data){
 		this.data = data;
@@ -47,7 +47,7 @@ public class Matrix implements MatrixOperations<Matrix>{
 		return sb.toString();
 	}
 	
-	private boolean sameDimension(Matrix matrix, Matrix that) {
+	protected boolean sameDimension(Matrix matrix, Matrix that) {
 		return this.rows==that.rows && that.columns==that.columns;
 	}
 
@@ -78,6 +78,20 @@ public class Matrix implements MatrixOperations<Matrix>{
 		}
 		return mb.build();
 	}
+	
+	@Override
+	public Matrix entrywiseMultiplyBy(Matrix that) throws IllegalArgumentException {
+		if(!sameDimension(this, that)){
+			throw new IllegalArgumentException();
+		}
+		Matrix.Builder mb = new Matrix.Builder(rows, columns);
+		for(int rowIndex=0; rowIndex<rows; rowIndex++){
+			for(int columnIndex=0; columnIndex<columns; columnIndex++){
+				mb.set(rowIndex+1, columnIndex+1, this.data[rowIndex][columnIndex].multiplyBy(that.data[rowIndex][columnIndex]));
+			}
+		}
+		return mb.build();
+	}
 
 	@Override
 	public Matrix multiplyBy(Matrix that) throws IllegalArgumentException {
@@ -102,9 +116,31 @@ public class Matrix implements MatrixOperations<Matrix>{
 		// TODO Auto-generated method stub
 		return null;
 	}
+	
+	@Override
+	public Matrix conjugate() {
+		Matrix.Builder mb = new Matrix.Builder(rows, columns);
+		for(int rowIndex=0; rowIndex<rows; rowIndex++){
+			for(int columnIndex=0; columnIndex<columns; columnIndex++){
+				mb.set(rowIndex+1, columnIndex+1, this.data[rowIndex][columnIndex].conjugate());
+			}
+		}
+		return mb.build();
+	}
+	
+	@Override
+	public Matrix hermitianTranspose() {
+		Matrix.Builder mb = new Matrix.Builder(columns, rows);
+		for(int rowIndex=0; rowIndex<rows; rowIndex++){
+			for(int columnIndex=0; columnIndex<columns; columnIndex++){
+				mb.set(columnIndex+1, rowIndex+1, this.data[rowIndex][columnIndex].conjugate());
+			}
+		}
+		return mb.build();
+	}
 
 	@Override
-	public Matrix add(double n){
+	public Matrix add(Complex n){
 		Matrix.Builder mb = new Matrix.Builder(rows, columns);
 		for(int rowIndex=0; rowIndex<rows; rowIndex++){
 			for(int columnIndex=0; columnIndex<columns; columnIndex++){
@@ -115,7 +151,7 @@ public class Matrix implements MatrixOperations<Matrix>{
 	}
 
 	@Override
-	public Matrix substract(double n){
+	public Matrix substract(Complex n){
 		Matrix.Builder mb = new Matrix.Builder(rows, columns);
 		for(int rowIndex=0; rowIndex<rows; rowIndex++){
 			for(int columnIndex=0; columnIndex<columns; columnIndex++){
@@ -126,7 +162,7 @@ public class Matrix implements MatrixOperations<Matrix>{
 	}
 
 	@Override
-	public Matrix multiplyBy(double n){
+	public Matrix multiplyBy(Complex n){
 		Matrix.Builder mb = new Matrix.Builder(rows, columns);
 		for(int rowIndex=0; rowIndex<rows; rowIndex++){
 			for(int columnIndex=0; columnIndex<columns; columnIndex++){
@@ -137,10 +173,7 @@ public class Matrix implements MatrixOperations<Matrix>{
 	}
 
 	@Override
-	public Matrix divideBy(double n) throws IllegalArgumentException {
-		if(Double.compare(n, 0d)==0){
-			throw new IllegalArgumentException();
-		}
+	public Matrix divideBy(Complex n) throws IllegalArgumentException {
 		Matrix.Builder mb = new Matrix.Builder(rows, columns);
 		for(int rowIndex=0; rowIndex<rows; rowIndex++){
 			for(int columnIndex=0; columnIndex<columns; columnIndex++){
@@ -238,4 +271,7 @@ public class Matrix implements MatrixOperations<Matrix>{
 		}
 	}
 
+	public Complex[][] data() {
+		return this.data;
+	}
 }
