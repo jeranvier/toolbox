@@ -4,7 +4,7 @@ import java.lang.reflect.Method;
 import java.util.Arrays;
 import java.util.List;
 
-import jeranvier.math.stats.exceptions.EmptyArrayException;
+import jeranvier.math.exceptions.EmptyArrayException;
 
 /* Class computing various mectrics on an array of data
  */
