@@ -3,7 +3,7 @@ package jeranvier.math.util;
 import java.text.DecimalFormat;
 
 public class Complex{
-	private static final double DELTA = 1e-15;
+	private static final double DELTA = 1e-20;
 	private final double a;
 	private final double b;
 	private static final DecimalFormat formatter = new DecimalFormat("###0.###");
@@ -49,7 +49,7 @@ public class Complex{
 	
 	@Override
 	public String toString(){
-		return formatter.format(a)+(!isReal()?("+"+formatter.format(b)+"i"):"");
+		return formatter.format(a)+(!isReal()?((b<0?"":"+")+formatter.format(b)+"i"):"");
 	}
 
 	public Complex substract(Complex that) {
