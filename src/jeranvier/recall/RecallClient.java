@@ -38,5 +38,15 @@ public class RecallClient implements RecallServerInterface{
 	public Set<String> getAllNames() throws RemoteException {
 		return linkedServer.getAllNames();
 	}
+
+	@Override
+	public void open(String filePath) throws RemoteException {
+		linkedServer.open(filePath);
+	}
+
+	@Override
+	public void saveToDisk(String filePath, String objectName) throws RemoteException {
+		linkedServer.saveToDisk(filePath, objectName);
+	}
     
 }

@@ -12,7 +12,11 @@ public interface RecallServerInterface extends Remote{
 	public void remember(String objectName, Serializable object) throws RemoteException;
 	
 	public void forget(String objectName) throws RemoteException;
-	
+
 	public Set<String> getAllNames() throws RemoteException;
+
+	public void open(String filePath) throws RemoteException;
+
+	public void saveToDisk(String filePath, String objectName) throws RemoteException;
 
 }

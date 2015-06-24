@@ -1,5 +1,10 @@
 package jeranvier.recall;
 
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.rmi.Naming;
 import java.rmi.RemoteException;
@@ -44,6 +49,8 @@ public class RecallServer extends UnicastRemoteObject implements RecallServerInt
         //add a simple ui
         ServerView view = new ServerView();
         server.addView(view);
+        ServerControler sc = new ServerControler(server, view);
+        view.addControler(sc);
         view.pack();
 		view.setVisible(true);
     }
@@ -78,6 +85,31 @@ public class RecallServer extends UnicastRemoteObject implements RecallServerInt
 	public void updateViews(){
 		for(View observer : views){
 			observer.update(this);
+		}
+	}
+
+	@Override
+	public void open(String fileName) {
+		 try(ObjectInputStream objectinputstream = new ObjectInputStream(new FileInputStream(fileName))){
+			 
+	            Object[] objects = (Object[])objectinputstream.readObject();
+	            data.put((String)objects[0], (Serializable)objects[1]);
+	            updateViews();
+	        } catch (Exception e) {
+
+	            e.printStackTrace();
+	        }
+	}
+
+	@Override
+	public void saveToDisk(String fileName, String objectName) {
+		if(!fileName.substring(fileName.length()-4).equals(".mem")){
+			fileName = fileName+".mem";
+		}
+		try(ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(fileName))){
+			oos.writeObject(new Object[]{objectName, this.data.get(objectName)});
+		} catch (IOException e) {
+			e.printStackTrace();
 		}
 	}
 }
