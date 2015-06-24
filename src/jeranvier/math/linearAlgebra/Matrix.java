@@ -54,7 +54,7 @@ public class Matrix implements MatrixOperations<Matrix>{
 	@Override
 	public Matrix add(Matrix that) throws IllegalArgumentException {
 		if(!sameDimension(this, that)){
-			throw new IllegalArgumentException();
+			throw new IllegalArgumentException("["+this.rows+","+this.columns+"] + ["+that.rows+","+that.columns+"]");
 		}
 		Matrix.Builder mb = new Matrix.Builder(rows, columns);
 		for(int rowIndex=0; rowIndex<rows; rowIndex++){
@@ -68,7 +68,7 @@ public class Matrix implements MatrixOperations<Matrix>{
 	@Override
 	public Matrix substract(Matrix that) throws IllegalArgumentException {
 		if(!sameDimension(this, that)){
-			throw new IllegalArgumentException();
+			throw new IllegalArgumentException("["+this.rows+","+this.columns+"] - ["+that.rows+","+that.columns+"]");
 		}
 		Matrix.Builder mb = new Matrix.Builder(rows, columns);
 		for(int rowIndex=0; rowIndex<rows; rowIndex++){
@@ -82,7 +82,7 @@ public class Matrix implements MatrixOperations<Matrix>{
 	@Override
 	public Matrix entrywiseMultiplyBy(Matrix that) throws IllegalArgumentException {
 		if(!sameDimension(this, that)){
-			throw new IllegalArgumentException();
+			throw new IllegalArgumentException("["+this.rows+","+this.columns+"] .x ["+that.rows+","+that.columns+"]");
 		}
 		Matrix.Builder mb = new Matrix.Builder(rows, columns);
 		for(int rowIndex=0; rowIndex<rows; rowIndex++){
@@ -96,7 +96,7 @@ public class Matrix implements MatrixOperations<Matrix>{
 	@Override
 	public Matrix multiplyBy(Matrix that) throws IllegalArgumentException {
 		if(this.columns != that.rows){
-			throw new IllegalArgumentException();
+			throw new IllegalArgumentException("["+this.rows+","+this.columns+"] x ["+that.rows+","+that.columns+"]");
 		}
 		Matrix.Builder mb = new Matrix.Builder(this.rows, that.columns);
 		for(int i=0; i<this.rows; i++){
