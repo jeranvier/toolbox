@@ -49,7 +49,7 @@ public class Complex{
 	
 	@Override
 	public String toString(){
-		return formatter.format(a)+(!isReal()?("+"+formatter.format(b)):"")+"i";
+		return formatter.format(a)+(!isReal()?("+"+formatter.format(b)+"i"):"");
 	}
 
 	public Complex substract(Complex that) {
