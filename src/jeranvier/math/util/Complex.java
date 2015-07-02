@@ -6,7 +6,7 @@ public class Complex{
 	private static final double DELTA = 1e-20;
 	private final double a;
 	private final double b;
-	private static final DecimalFormat formatter = new DecimalFormat("###0.###");
+	private static final DecimalFormat formatter = new DecimalFormat("###0.##########");
 
 	
 	public Complex(double a, double b){
