@@ -185,15 +185,16 @@ public class Matrix implements MatrixOperations<Matrix>{
 	
 	@Override
 	public Complex determinant() throws IllegalArgumentException{
-		if(this.rows != this.columns){
-			throw new IllegalArgumentException("Matrix not squared");
-		}
-		Matrix lowerTrangular = computerLowerTriangular();
-		Complex product = new Complex(1, 0);
-		for(int i=0; i<this.rows; i++){
-			product = product.multiplyBy(lowerTrangular.data[i][i]);
-		}
-		return product;
+		throw new IllegalArgumentException("error in the method. MAtematically incorrect");
+//		if(this.rows != this.columns){
+//			throw new IllegalArgumentException("Matrix not squared");
+//		}
+//		Matrix lowerTrangular = computerLowerTriangular();
+//		Complex product = new Complex(1, 0);
+//		for(int i=0; i<this.rows; i++){
+//			product = product.multiplyBy(lowerTrangular.data[i][i]);
+//		}
+//		return product;
 	}
 	
 	public Matrix computerLowerTriangular() {
@@ -207,6 +208,20 @@ public class Matrix implements MatrixOperations<Matrix>{
 			}
 		}		
 		return mb.build();
+	}
+	
+	public static Matrix identity(int columns) {
+		Builder builder = new Builder(columns, columns);
+		for(int i = 1; i <= columns; i++){
+			for(int j = 1; j <= columns; j++){
+				if(i==j){
+					builder.set(i, j, 1);					
+				}else{
+					builder.set(i, j, 0);
+				}
+			}
+		}
+		return builder.build();
 	}
 
 	public static class Builder{
