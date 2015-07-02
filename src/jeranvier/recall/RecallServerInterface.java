@@ -3,6 +3,7 @@ package jeranvier.recall;
 import java.io.Serializable;
 import java.rmi.Remote;
 import java.rmi.RemoteException;
+import java.util.HashSet;
 import java.util.Set;
 
 public interface RecallServerInterface extends Remote{
@@ -13,7 +14,7 @@ public interface RecallServerInterface extends Remote{
 	
 	public void forget(String objectName) throws RemoteException;
 
-	public Set<String> getAllNames() throws RemoteException;
+	public HashSet<String> getAllNames() throws RemoteException;
 
 	public void open(String filePath) throws RemoteException;
 

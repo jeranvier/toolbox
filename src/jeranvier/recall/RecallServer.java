@@ -73,8 +73,12 @@ public class RecallServer extends UnicastRemoteObject implements RecallServerInt
 	}
 
 	@Override
-	public Set<String> getAllNames() {
-		return this.data.keySet();
+	public HashSet<String> getAllNames() {
+		HashSet<String> allNames = new HashSet<String>();
+		for(String name :this.data.keySet()){
+			allNames.add(name);
+		}
+		return allNames;
 	}
 	
 	@Override

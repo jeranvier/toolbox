@@ -5,6 +5,7 @@ import java.net.MalformedURLException;
 import java.rmi.Naming;
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
+import java.util.HashSet;
 import java.util.Set;
 
 public class RecallClient implements RecallServerInterface{ 
@@ -35,7 +36,7 @@ public class RecallClient implements RecallServerInterface{
 	}
 
 	@Override
-	public Set<String> getAllNames() throws RemoteException {
+	public HashSet<String> getAllNames() throws RemoteException {
 		return linkedServer.getAllNames();
 	}
 
