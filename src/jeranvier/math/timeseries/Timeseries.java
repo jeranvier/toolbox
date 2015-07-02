@@ -39,6 +39,19 @@ public class Timeseries extends TreeMap<Long,Double> implements Serializable{
 		 }
 		 return tsb.build();
 	}
+	
+	public Timeseries substituteAll(Double[] values){
+		if(this.size() != values.length){
+			throw new IllegalArgumentException("operation on timeseries of different sizes");
+		}
+		Builder tsb = new Timeseries.Builder();
+		int i = 0;
+		for(Map.Entry<Long, Double> element : this.entrySet()){
+			tsb.put(element.getKey(), values[i]);
+			i++;
+		}
+		return tsb.build();
+	}
 
 	public Timeseries max(int maxValue) {
 		 Builder tsb = new Timeseries.Builder();
@@ -164,6 +177,24 @@ public class Timeseries extends TreeMap<Long,Double> implements Serializable{
 		public Timeseries build() {
 			return new Timeseries(data);
 		}
+	}
+
+	public Timeseries linearResample(long start, long end, long step) {
+		return this.resample(start, end, step, (f, k ,c)->{
+					double ratio = ((double)(k-f.getKey()))/(c.getKey()-f.getKey());
+					return f.getValue() + ratio*(c.getValue() - f.getValue());
+				});
+	}
+	
+	public Timeseries nearestNeighborResample(long start, long end, long step) {
+		return this.resample(start, end, step, (f, k ,c)->{
+					if(Math.abs(f.getKey()-k) < Math.abs(c.getKey()-k)){
+						return f.getValue();
+					}
+					else{
+						return c.getValue();	
+					}
+				});
 	}
 	
 }

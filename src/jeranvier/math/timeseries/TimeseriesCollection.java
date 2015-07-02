@@ -3,8 +3,10 @@ package jeranvier.math.timeseries;
 import java.io.Serializable;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Set;
 import java.util.SortedMap;
 import java.util.TreeMap;
 
@@ -53,6 +55,10 @@ public class TimeseriesCollection implements Serializable{
 	
 	public int size(){
 		return this.data.size();
+	}
+	
+	public Set<String> getLabels(){
+		return labels.keySet();
 	}
 	
 	public static final class Builder{
