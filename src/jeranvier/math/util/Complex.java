@@ -43,13 +43,17 @@ public class Complex{
 		return Math.atan2(b, a);
 	}
 	
-	public boolean isReal(){
-		return b*b < DELTA;
+	private boolean hasIm(){
+		return b*b > DELTA;
+	}
+	
+	private boolean hasRe(){
+		return a*a > DELTA;
 	}
 	
 	@Override
 	public String toString(){
-		return formatter.format(a)+(!isReal()?((b<0?"":"+")+formatter.format(b)+"i"):"");
+		return (hasRe()?formatter.format(a):(hasIm()?"":"0.0"))+(hasIm()?((b<0?"":"+")+formatter.format(b)+"i"):"");
 	}
 
 	public Complex substract(Complex that) {
