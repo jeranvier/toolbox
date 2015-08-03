@@ -32,7 +32,7 @@ public class ButterworthFilter {
 		filteredBuilder.set(1, fft.get(1));
 		filteredBuilder.set(n, fft.get(n));
 		
-		for(int i = 2; i < n/2+1; i++){
+		for(int i = 2; i <= (n+1)/2; i++){
 			double binFreq = binWidth * i;
 			double gain = Math.abs(DCGain)/(Math.sqrt( ( 1 + Math.pow( binFreq / frequencyCut, 2.0 * filterOrder))));
 			filteredBuilder.set(i, fft.get(i).multiplyBy(gain));
