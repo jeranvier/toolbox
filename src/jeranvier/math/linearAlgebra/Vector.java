@@ -1,8 +1,11 @@
 package jeranvier.math.linearAlgebra;
 
+import java.util.Arrays;
+import java.util.Iterator;
+
 import jeranvier.math.util.Complex;
 
-public class Vector extends Matrix{
+public class Vector extends Matrix implements Iterable<Complex>{
 	
 	public Vector(Complex[][] data){
 		super(data);
@@ -17,6 +20,15 @@ public class Vector extends Matrix{
 	
 	public Complex get(int column){
 		return this.data[0][column-1];
+	}
+	
+	public Vector getRange(int min, int max){
+		Vector.Builder vb = new Vector.Builder(max - min +1);
+		for(int i = min; i <= max; i++){
+			vb.set(i-min+1, this.get(i));
+		}
+		
+		return vb.build();
 	}
 	
 	
@@ -37,7 +49,7 @@ public class Vector extends Matrix{
 		return sum;
 	}
 
-	public static final class Builder extends Matrix.Builder{
+	public static class Builder extends Matrix.Builder{
 		
 		public Builder(int size){
 			super(1, size);
@@ -82,6 +94,11 @@ public class Vector extends Matrix{
 			b.set(i, 0);
 		}
 		return b.build();
+	}
+
+	@Override
+	public Iterator<Complex> iterator() {
+		return Arrays.asList(data[0]).iterator();
 	}
 
 }
