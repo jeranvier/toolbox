@@ -30,9 +30,10 @@ public class RecallServer extends UnicastRemoteObject implements RecallServerInt
  
     public static void main(String args[]) throws Exception {
         System.out.println("Starting recall server");
+        System.setProperty("java.rmi.server.hostname","localhost");
  
         try { //special exception handler for registry creation
-            LocateRegistry.createRegistry(1099); 
+            Registry registry = LocateRegistry.createRegistry(1099); 
             System.out.println("java RMI registry created.");
         } catch (RemoteException e) {
             //do nothing, error means registry already exists
