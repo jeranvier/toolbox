@@ -9,7 +9,10 @@ import java.util.SortedMap;
 import java.util.TreeMap;
 import java.util.concurrent.ArrayBlockingQueue;
 
+import jeranvier.math.linearAlgebra.Matrix;
+import jeranvier.math.linearAlgebra.Vector;
 import jeranvier.math.stats.SimpleStats;
+import jeranvier.math.util.Complex;
 
 public class Timeseries extends TreeMap<Long,Double> implements Serializable{
 
@@ -25,7 +28,7 @@ public class Timeseries extends TreeMap<Long,Double> implements Serializable{
 	public String toString(){
 		StringBuilder sb = new StringBuilder();
 		for(Map.Entry<Long, Double> entry : this.entrySet()){
-			sb.append(entry.getKey()+" : "+entry.getValue()+"\n");
+			sb.append(entry.getKey()+"\t"+entry.getValue()+"\n");
 		}
 		return sb.toString();
 	}
@@ -42,7 +45,7 @@ public class Timeseries extends TreeMap<Long,Double> implements Serializable{
 	
 	public Timeseries substituteAll(Double[] values){
 		if(this.size() != values.length){
-			throw new IllegalArgumentException("operation on timeseries of different sizes");
+			throw new IllegalArgumentException("operation on timeseries of different sizes (" +this.size() +"=!"+values.length+")");
 		}
 		Builder tsb = new Timeseries.Builder();
 		int i = 0;
@@ -186,6 +189,13 @@ public class Timeseries extends TreeMap<Long,Double> implements Serializable{
 				});
 	}
 	
+	public Timeseries linearResample(long step) {
+		return this.resample(this.firstKey(), this.lastKey(), step, (f, k ,c)->{
+					double ratio = ((double)(k-f.getKey()))/(c.getKey()-f.getKey());
+					return f.getValue() + ratio*(c.getValue() - f.getValue());
+				});
+	}
+	
 	public Timeseries nearestNeighborResample(long start, long end, long step) {
 		return this.resample(start, end, step, (f, k ,c)->{
 					if(Math.abs(f.getKey()-k) < Math.abs(c.getKey()-k)){
@@ -195,6 +205,16 @@ public class Timeseries extends TreeMap<Long,Double> implements Serializable{
 						return c.getValue();	
 					}
 				});
+	}
+
+	public Vector vector() {
+		Vector.Builder vb = new Vector.Builder(this.size());
+		int i=1;
+		for(Double value : this.values()){
+			vb.set(i, new Complex(value, 0.0));
+			i++;
+		}
+		return vb.build();
 	}
 	
 }
