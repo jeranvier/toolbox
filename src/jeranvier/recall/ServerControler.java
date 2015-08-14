@@ -62,7 +62,7 @@ public class ServerControler extends MouseAdapter implements Controler{
 		        if (returnVal == JFileChooser.APPROVE_OPTION) {
 		            File file = fc.getSelectedFile();
 		            try {
-						((RecallServerInterface)viewed).saveToDisk(file.getCanonicalPath(), view.objects().getSelectedValue());
+						((RecallServerInterface)viewed).saveToDisk(file.getCanonicalPath());
 					} catch (IOException e) {
 						e.printStackTrace();
 					}

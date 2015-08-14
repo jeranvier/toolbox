@@ -18,6 +18,6 @@ public interface RecallServerInterface extends Remote{
 
 	public void open(String filePath) throws RemoteException;
 
-	public void saveToDisk(String filePath, String objectName) throws RemoteException;
+	public void saveToDisk(String filePath) throws RemoteException;
 
 }

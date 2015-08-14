@@ -39,9 +39,9 @@ public class ServerView extends JFrame implements View{
 	    scroll.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
 	    
 	    JPanel bottomControls = new JPanel(new GridLayout(4, 1));
-	    forgetButton = new JButton("forget object");
-	    saveButton = new JButton("write down");
-	    openButton = new JButton("read from disk");
+	    forgetButton = new JButton("forget entity");
+	    saveButton = new JButton("save mindset");
+	    openButton = new JButton("load mindset");
 	    statusBar = new JPanel();
 	    status = new JLabel();
 	    statusBar.add(status);

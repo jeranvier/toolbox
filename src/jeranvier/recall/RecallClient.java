@@ -46,8 +46,8 @@ public class RecallClient implements RecallServerInterface{
 	}
 
 	@Override
-	public void saveToDisk(String filePath, String objectName) throws RemoteException {
-		linkedServer.saveToDisk(filePath, objectName);
+	public void saveToDisk(String filePath) throws RemoteException {
+		linkedServer.saveToDisk(filePath);
 	}
     
 }

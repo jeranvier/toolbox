@@ -93,26 +93,25 @@ public class RecallServer extends UnicastRemoteObject implements RecallServerInt
 		}
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public void open(String fileName) {
 		 try(ObjectInputStream objectinputstream = new ObjectInputStream(new FileInputStream(fileName))){
-			 
-	            Object[] objects = (Object[])objectinputstream.readObject();
-	            data.put((String)objects[0], (Serializable)objects[1]);
+			 	data.clear();
+			 	data.putAll((Map<String, Serializable>) objectinputstream.readObject());
 	            updateViews();
 	        } catch (Exception e) {
-
 	            e.printStackTrace();
 	        }
 	}
 
 	@Override
-	public void saveToDisk(String fileName, String objectName) {
+	public void saveToDisk(String fileName) {
 		if(!fileName.substring(fileName.length()-4).equals(".mem")){
 			fileName = fileName+".mem";
 		}
 		try(ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(fileName))){
-			oos.writeObject(new Object[]{objectName, this.data.get(objectName)});
+			oos.writeObject(this.data);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
