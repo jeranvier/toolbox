@@ -18,7 +18,7 @@ public class ButterworthFilter {
 	}
 	
 	public ButterworthFilter(double sampleRate, double frequencyCut, int filterOrder){
-			this(frequencyCut, sampleRate, filterOrder, 1.0);
+			this(sampleRate, frequencyCut, filterOrder, 1.0);
 	}
 	
 	
