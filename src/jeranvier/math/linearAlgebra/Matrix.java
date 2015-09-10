@@ -14,6 +14,15 @@ public class Matrix implements MatrixOperations<Matrix>{
 		this.columns = data[0].length;
 	}
 	
+	protected Matrix(Complex[] vectorData){
+		this.rows = 1;
+		this.columns = vectorData.length;
+		this.data = new Complex[this.rows][this.columns];
+		for(int i = 0; i<vectorData.length; i++){
+			this.data[0][i] = vectorData[i];
+		}
+	}
+	
 	public Complex get(int row, int column){
 		return this.data[row-1][column-1];
 	}
@@ -185,7 +194,7 @@ public class Matrix implements MatrixOperations<Matrix>{
 	
 	@Override
 	public Complex determinant() throws IllegalArgumentException{
-		throw new IllegalArgumentException("error in the method. MAtematically incorrect");
+		throw new IllegalArgumentException("error in the method. Matematically incorrect");
 //		if(this.rows != this.columns){
 //			throw new IllegalArgumentException("Matrix not squared");
 //		}
@@ -298,5 +307,12 @@ public class Matrix implements MatrixOperations<Matrix>{
 
 	public Complex[][] data() {
 		return this.data;
+	}
+
+	public Vector vector() {
+		if(this.rows != 1){
+			throw new IllegalArgumentException("The matrix cannot be cast as a vector ("+this.rows+"x"+this.columns+")");
+		}
+		return new Vector(data);
 	}
 }

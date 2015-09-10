@@ -14,6 +14,10 @@ public class Vector extends Matrix implements Iterable<Complex>{
 		}
 	}
 	
+	public Vector(double... values) {
+		super(doubleToComplex(values));
+	}
+
 	public int size(){
 		return this.data[0].length;
 	}
@@ -99,6 +103,22 @@ public class Vector extends Matrix implements Iterable<Complex>{
 	@Override
 	public Iterator<Complex> iterator() {
 		return Arrays.asList(data[0]).iterator();
+	}
+	
+	private static Complex[] doubleToComplex(double[] doubles) {
+		Complex[] result = new Complex[doubles.length];
+		for(int i=0; i<doubles.length; i++){
+			result[i] = new Complex(doubles[i], 0.0);
+		}
+		return result;
+	}
+
+	public double euclidianNorm() {
+		return Math.sqrt(this.dot(this.conjugate().vector()).r());
+	}
+
+	public Vector normalize() {
+		return this.divideBy(new Complex(this.euclidianNorm(), 0.0)).vector();
 	}
 
 }
