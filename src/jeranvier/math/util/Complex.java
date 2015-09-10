@@ -3,7 +3,7 @@ package jeranvier.math.util;
 import java.text.DecimalFormat;
 
 public class Complex{
-	private static final double DELTA = 1e-20;
+	public static final double DELTA = 1e-20;
 	private final double a;
 	private final double b;
 	private static final DecimalFormat formatter = new DecimalFormat("###0.##########");
@@ -17,6 +17,10 @@ public class Complex{
 	public Complex(){
 		this.a = 0 ;
 		this.b = 0;
+	}
+	
+	public static final Complex newPolarComplex(double r, double phi){ //angle in degree
+		return new Complex(r*Math.cos(phi), r*Math.sin(phi));
 	}
 	
 	public double a(){
