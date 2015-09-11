@@ -55,6 +55,19 @@ public class Timeseries extends TreeMap<Long,Double> implements Serializable{
 		}
 		return tsb.build();
 	}
+	
+	public Timeseries substituteAll(Vector values){
+		if(this.size() != values.size()){
+			throw new IllegalArgumentException("operation on timeseries of different sizes (" +this.size() +"=!"+values.size()+")");
+		}
+		Builder tsb = new Timeseries.Builder();
+		int i = 1;
+		for(Map.Entry<Long, Double> element : this.entrySet()){
+			tsb.put(element.getKey(), values.get(i).re());
+			i++;
+		}
+		return tsb.build();
+	}
 
 	public Timeseries max(int maxValue) {
 		 Builder tsb = new Timeseries.Builder();
