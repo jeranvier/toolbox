@@ -36,7 +36,7 @@ public class Timeseries extends TreeMap<Long,Double> implements Serializable{
 	public Timeseries subTimeseries(Long start, Long end){
 		 Builder tsb = new Timeseries.Builder();
 		 for(Map.Entry<Long, Double> element : this.entrySet()){
-			 if(element.getKey() > start && element.getKey() < end){
+			 if(element.getKey() >= start && element.getKey() < end){
 				 tsb.put(element.getKey(), element.getValue());
 			 }
 		 }
