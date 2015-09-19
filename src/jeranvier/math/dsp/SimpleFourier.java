@@ -4,35 +4,43 @@ import jeranvier.math.linearAlgebra.Vector;
 import jeranvier.math.util.Complex;
 
 public class SimpleFourier {
-		
+	
 	public static Vector simpleDFT(Vector in) {
-		Vector.Builder outBuilder = new Vector.Builder(in.size());
-		int size = in.size();
-	    for (int o = 1; o <= in.size(); o++) {
+		return new Vector.Builder(simpleDFT(in.data()[0])).build();
+	}
+		
+	public static Complex[] simpleDFT(Complex[] in) {
+		Complex[] out = new Complex[in.length];
+		int size = in.length;
+	    for (int o = 0; o < size; o++) {
 	    	Complex sum = new Complex();
-	        for (int i = 1; i <= in.size(); i++) {
+	        for (int i = 0; i < size; i++) {
 	            double angle = 2 * Math.PI * i * o / size;
 	            Complex multiple = new Complex(Math.cos(angle), -1*Math.sin(angle));
-	            sum = sum.add(in.get(i).multiplyBy(multiple));
+	            sum = sum.add(in[i].multiplyBy(multiple));
 
 	        }
-	        outBuilder.set(o, sum);
+	        out[o] = sum;
         }
-	    return outBuilder.build();
+	    return out;
+	}
+	
+	public static Vector simpleIDFT(Vector in) {
+		return new Vector.Builder(simpleIDFT(in.data()[0])).build();
 	}
 
-	public static Vector simpleIDFT(Vector in) {
-		Vector.Builder outBuilder = new Vector.Builder(in.size());
-		int size = in.size();
-	    for (int o = 1; o <= in.size(); o++) {
+	public static Complex[] simpleIDFT(Complex[] in) {
+		Complex[] out = new Complex[in.length];
+		int size = in.length;
+	    for (int o = 0; o < size; o++) {
 	    	Complex sum = new Complex();
-	        for (int i = 1; i <= in.size(); i++) {
+	        for (int i = 0; i < size; i++) {
 	            double angle = 2 * Math.PI * i * o / size;
 	            Complex multiple = new Complex(Math.cos(angle), Math.sin(angle));
-	            sum = sum.add(in.get(i).multiplyBy(multiple));
+	            sum = sum.add(in[i].multiplyBy(multiple));
 	        }
-	        outBuilder.set(o, sum.divideBy(size));
+	        out[o] = sum.divideBy(size);
         }
-	    return outBuilder.build();
+	    return out;
 	}
 }
