@@ -6,11 +6,13 @@ import java.rmi.Naming;
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.util.HashSet;
-import java.util.Set;
+import java.util.logging.Logger;
 
 public class RecallClient implements RecallServerInterface{ 
 	
     private RecallServerInterface linkedServer;
+    private static final Logger log = Logger.getLogger("recall.client");
+
 
 	public RecallClient(){
         try {
@@ -22,16 +24,19 @@ public class RecallClient implements RecallServerInterface{
 
 	@Override
 	public Serializable recall(String objectName) throws RemoteException {
+		log.finest("Recall: "+objectName);
 		return linkedServer.recall(objectName);
 	}
 
 	@Override
 	public void remember(String objectName, Serializable object) throws RemoteException {
+		log.finest("Remember: "+objectName);
 		linkedServer.remember(objectName, object);
 	}
 
 	@Override
 	public void forget(String objectName) throws RemoteException {
+		log.finest("Forget: "+objectName);
 		linkedServer.forget(objectName);
 	}
 
