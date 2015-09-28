@@ -233,8 +233,8 @@ public class Matrix implements MatrixOperations<Matrix>{
 		return builder.build();
 	}
 	
-	public Double[][] re() {
-		Double[][] re = new Double[data.length][data[0].length];
+	public double[][] re() {
+		double[][] re = new double[data.length][data[0].length];
 		for(int i = 0; i <data.length; i++){
 			for(int j = 0; j< data[0].length; j++){
 				re[i][j] = data[i][j].re();
