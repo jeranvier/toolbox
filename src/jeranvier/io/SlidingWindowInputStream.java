@@ -1,8 +1,15 @@
 package jeranvier.io;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.ByteBuffer;
+import java.nio.ByteOrder;
 import java.util.Arrays;
+
+import javax.sound.sampled.AudioInputStream;
+import javax.sound.sampled.AudioSystem;
+import javax.sound.sampled.UnsupportedAudioFileException;
 
 public class SlidingWindowInputStream extends InputStream{
 	
@@ -64,6 +71,25 @@ public class SlidingWindowInputStream extends InputStream{
 			b = new byte[0];
 			return -1;
 		}
+	}
+	
+	public static void main(String[] arg) throws UnsupportedAudioFileException, IOException{
+		int frameSize = 128;
+		int frameShift = 5;
+		AudioInputStream audio = AudioSystem.getAudioInputStream(new File("/Users/ranvier/Desktop/tone600.wav"));
+		SlidingWindowInputStream swis = new SlidingWindowInputStream(audio, frameSize, frameShift);
+		byte[] read = new byte[frameSize];
+		ByteBuffer bb = ByteBuffer.allocate(2);
+//		bb.order(audio.getFormat().isBigEndian()?ByteOrder.BIG_ENDIAN:ByteOrder.LITTLE_ENDIAN);
+		swis.read(read);
+		for(int i=0; i<read.length/2; i++){
+			bb.clear();
+			bb.put(read[2*i]);
+			bb.put(read[2*i+1]);
+			System.out.println(bb.getShort(0));
+//			System.out.println(read[2*i+1]);
+		}
+		
 	}
 
 
