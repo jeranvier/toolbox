@@ -1,43 +1,54 @@
 package jeranvier.math.morphology;
 
 import jeranvier.math.linearAlgebra.Vector;
+import jeranvier.math.util.MathExtension;
 
 public class MMOperations {
 	
-	public static Vector dilation(Vector f , StructuringElement g){
-		int n = g.size();
-		Vector.Builder resultBuilder = new Vector.Builder(f.size()-n);
-		for(int x = g.getCenterIndex()+1; x <= f.size()-(n-g.getCenterIndex()); x++){
-			double max = Double.NEGATIVE_INFINITY;
-			for(int i=1; i<=n; i++){
-				double value = f.get(x-g.getCenterIndex() +i).re() + g.get(i).re();
-				if(value > max){
-					max = value;
+	private static double[] dilation(double[] f, double[] g, int centerIndex) {
+		double[] result = new double[f.length-g.length];
+		
+		int gLeftSideLength = centerIndex;
+		int gRightSideLength = g.length-centerIndex;
+		for(int x = gLeftSideLength; x<f.length-gRightSideLength; x++){
+			double[] temp = new double[g.length];
+			for(int i = 0; i<g.length; i++){
+				if(x+i < f.length){
+					temp[i] = f[x-gLeftSideLength+i] + g[i];					
 				}
 			}
-			resultBuilder.set(x-g.getCenterIndex(), max);
+			result[x-gLeftSideLength] = MathExtension.max(temp);
 		}
+		return result;
+	}
+
+	private static double[] erosion(double[] f, double[] g, int centerIndex) {
+		double[] result = new double[f.length-g.length];
+		int gLeftSideLength = centerIndex;
+		int gRightSideLength = g.length-centerIndex;
+		double[] reversedG = reverse(g);
 		
-		return resultBuilder.build();
+		for(int x = gLeftSideLength; x<f.length-gRightSideLength; x++){
+				double[] temp = new double[reversedG.length];
+				for(int i = 0; i<reversedG.length; i++){
+					if(x+i < f.length){
+						temp[i] = f[x-gLeftSideLength+i] - reversedG[i];					
+					}
+				}
+				result[x-gLeftSideLength] = MathExtension.min(temp);
+		}
+		return result;
 	}
 	
 	public static Vector erosion(Vector f , StructuringElement g){
-		int n = g.size();
-		Vector.Builder resultBuilder = new Vector.Builder(f.size()-n);
-		for(int x = g.getCenterIndex()+1; x <= f.size()-(n-g.getCenterIndex()); x++){
-			double min = Double.POSITIVE_INFINITY;
-			for(int i=1; i<=n; i++){
-				double value = f.get(x-g.getCenterIndex() +i).re() - g.get(i).re();
-				if(value < min){
-					min = value;
-				}
-			}
-			resultBuilder.set(x-g.getCenterIndex(), min);
-		}
-		
-		return resultBuilder.build();
+		return new Vector(erosion(f.re()[0], g.vector().re()[0], g.getCenterIndex()));
 	}
 	
+	public static Vector dilation(Vector f , StructuringElement g){
+		return new Vector(dilation(f.re()[0], g.vector().re()[0], g.getCenterIndex()));
+	}
+	
+
 	public static Vector open(Vector f , StructuringElement g){
 		return erosion(dilation(f,g), g);
 	}
@@ -52,6 +63,18 @@ public class MMOperations {
 	
 	public static Vector bottomHat(Vector f , StructuringElement g){
 		return new Vector(f.getRange(2*g.getCenterIndex()+1, f.size()-2*(g.size()-g.getCenterIndex())).substract(close(f, g)).data());
+	}
+	
+	private static double[] reverse(double[] g){
+		double[] reversedG = g;
+		
+		for(int i = 0; i < reversedG.length / 2; i++)
+		{
+		    double temp = reversedG[i];
+		    reversedG[i] = reversedG[reversedG.length - i - 1];
+		    reversedG[reversedG.length - i - 1] = temp;
+		}
+		return reversedG;
 	}
 
 }
