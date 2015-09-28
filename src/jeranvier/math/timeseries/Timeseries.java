@@ -43,7 +43,7 @@ public class Timeseries extends TreeMap<Long,Double> implements Serializable{
 		 return tsb.build();
 	}
 	
-	public Timeseries substituteAll(Double[] values){
+	public Timeseries substituteAll(double[] values){
 		if(this.size() != values.length){
 			throw new IllegalArgumentException("operation on timeseries of different sizes (" +this.size() +"=!"+values.length+")");
 		}
@@ -171,13 +171,17 @@ public class Timeseries extends TreeMap<Long,Double> implements Serializable{
 		return tsb.build();
 	}
 	
-	private Double get(long key, Resampler<Long, Double> resampler) {
+	private double get(long key, Resampler<Long, Double> resampler) {
 		if(this.containsKey(key)){
 			return get(key);
 		}
 		else{
 			return resampler.interpolate(this.floorEntry(key), key, this.ceilingEntry(key));
 		}
+	}
+	
+	public long duration(){
+		return this.lastKey()-this.firstKey();
 	}
 
 	public static final class Builder{
@@ -186,7 +190,7 @@ public class Timeseries extends TreeMap<Long,Double> implements Serializable{
 			data = new TreeMap<>();
 		}
 
-		public void put(Long key, Double value) {
+		public void put(Long key, double value) {
 			data.put(key, value);
 		}
 
