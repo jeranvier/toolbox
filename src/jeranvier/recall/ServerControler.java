@@ -29,6 +29,7 @@ public class ServerControler extends MouseAdapter implements Controler{
 		this.viewed = viewed;
 		this.view = view;
 		fc.setFileFilter(new FileNameExtensionFilter("memorable object","mem"));
+		this.view.setStatus(this.view.getMemoryConsumptionMessage());
 	}
 
 	public void mouseClicked(MouseEvent evt) {
@@ -38,9 +39,9 @@ public class ServerControler extends MouseAdapter implements Controler{
 	        if (evt.getClickCount() == 2) {
 	            int index = list.locationToIndex(evt.getPoint());
 	            try {
-	            	this.setStatus("Displaying object...");
+	            	this.view.setStatus("Displaying object...");
 					display(list.getModel().getElementAt(index), ((RecallServerInterface)viewed).recall(list.getModel().getElementAt(index)));
-	            	this.setStatus("");
+	            	this.view.setStatus(this.view.getMemoryConsumptionMessage());
 	            } catch (RemoteException e) {
 					e.printStackTrace();
 				}
@@ -57,7 +58,7 @@ public class ServerControler extends MouseAdapter implements Controler{
 				}
 			}
 			else if(evt.getSource().equals(view.saveButton()) && evt.getClickCount() >= 1){
-		        this.setStatus("Saving file");
+		        this.view.setStatus("Saving file");
 				int returnVal = fc.showSaveDialog(view);
 		        if (returnVal == JFileChooser.APPROVE_OPTION) {
 		            File file = fc.getSelectedFile();
@@ -67,9 +68,9 @@ public class ServerControler extends MouseAdapter implements Controler{
 						e.printStackTrace();
 					}
 		        }
-		        this.setStatus("");
+		        this.view.setStatus(this.view.getMemoryConsumptionMessage());
 			}else if(evt.getSource().equals(view.openButton()) && evt.getClickCount() >= 1){
-				this.setStatus("Opening file");
+				this.view.setStatus("Opening file");
 				int returnVal = fc.showOpenDialog(view);
 		        if (returnVal == JFileChooser.APPROVE_OPTION) {
 		            File file = fc.getSelectedFile();
@@ -79,15 +80,10 @@ public class ServerControler extends MouseAdapter implements Controler{
 						e.printStackTrace();
 					}
 		        }
-		        this.setStatus("");
+		        this.view.setStatus(this.view.getMemoryConsumptionMessage());
 			}
 		}
     }
-
-	private void setStatus(String status){
-		this.view.status().setText(status);
-    	this.view.invalidate();
-	}
 	
 	private void display(String objectName, Serializable object) {
 		Thread viewer = new Thread(new ObjectView(objectName, object));

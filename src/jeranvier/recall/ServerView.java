@@ -25,6 +25,9 @@ public class ServerView extends JFrame implements View{
 	private JButton openButton;
 	private JPanel statusBar;
 	private JLabel status;
+	private static final long KB = 1024l;
+	private static final long MB = 1024l * 1024l;
+	private static final long GB = 1024l * 1024l * 1024l;
 	
 	public ServerView(){
 		this.setTitle("Recall server");
@@ -52,8 +55,8 @@ public class ServerView extends JFrame implements View{
 	    
 		this.getContentPane().add(scroll, BorderLayout.CENTER);
 		this.getContentPane().add(bottomControls, BorderLayout.PAGE_END);
-		this.getContentPane().setPreferredSize(new Dimension(200, 300));
-		this.setLocation(200, 200);
+		this.getContentPane().setPreferredSize(new Dimension(300, 300));
+		this.setLocation(300, 300);
 	}	
 
 	@Override
@@ -64,6 +67,7 @@ public class ServerView extends JFrame implements View{
 			String[] stringArray = new String[names.size()];
 			names.toArray(stringArray);
 			objects.setListData(stringArray);
+			this.setStatus(this.getMemoryConsumptionMessage());
 		} catch (RemoteException e) {
 			e.printStackTrace();
 		}
@@ -100,6 +104,59 @@ public class ServerView extends JFrame implements View{
 	
 	public JLabel status() {
 		return status;
+	}
+	
+	public String getMemoryConsumptionMessage() {
+	    Runtime runtime = Runtime.getRuntime();
+	    runtime.gc();
+	    long totalMemory = runtime.totalMemory();
+	    long freeMemory = runtime.freeMemory();
+	    long usedMemory = totalMemory - freeMemory;
+	    StringBuilder formatedMemoryBuilder = new StringBuilder();
+	    formatedMemoryBuilder.append("Memory usage:");
+	    
+	    if(usedMemory/KB <1){
+		    formatedMemoryBuilder.append(String.format("%.2f", (double)usedMemory));
+		    formatedMemoryBuilder.append("B");
+
+	    }
+	    else if(usedMemory/MB <1){
+	    	formatedMemoryBuilder.append(String.format("%.2f", ((double)usedMemory)/KB));
+		    formatedMemoryBuilder.append("KB");
+	    }
+	    else if(usedMemory/GB <1){
+	    	formatedMemoryBuilder.append(String.format("%.2f", ((double)usedMemory)/MB));
+		    formatedMemoryBuilder.append("MB");
+	    }
+	    else{
+	    	formatedMemoryBuilder.append(String.format("%.2f", ((double)usedMemory)/GB));
+		    formatedMemoryBuilder.append("GB");
+	    }
+	    formatedMemoryBuilder.append("/");
+	    
+	    if(totalMemory/KB <1){
+		    formatedMemoryBuilder.append(String.format("%.2f", (double)totalMemory));
+		    formatedMemoryBuilder.append("B");
+
+	    }
+	    else if(totalMemory/MB <1){
+	    	formatedMemoryBuilder.append(String.format("%.2f", ((double)totalMemory)/KB));
+		    formatedMemoryBuilder.append("KB");
+	    }
+	    else if(totalMemory/GB <1){
+	    	formatedMemoryBuilder.append(String.format("%.2f", ((double)totalMemory)/MB));
+		    formatedMemoryBuilder.append("MB");
+	    }
+	    else{
+	    	formatedMemoryBuilder.append(String.format("%.2f", ((double)totalMemory)/GB));
+		    formatedMemoryBuilder.append("GB");
+	    }
+	    return formatedMemoryBuilder.toString();
+	}
+	
+	public void setStatus(String status){
+		this.status.setText(status);
+    	this.invalidate();
 	}
 	
 
