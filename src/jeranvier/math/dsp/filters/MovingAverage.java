@@ -8,9 +8,9 @@ public class MovingAverage {
 	public static Vector SimpleMovingAverage(Vector data, int windowRadius){
 		Vector.Builder vb = new Vector.Builder(data.size());
 		
-		for(int i = 1; i <= windowRadius; i++){
+		for(int i = 0; i < windowRadius; i++){
 			Complex sum = new Complex();
-			for(int j=1; j<=i+windowRadius; j++){
+			for(int j=0; j<i+windowRadius; j++){
 				sum = sum.add(data.get(j));
 			}
 			vb.set(i, sum.divideBy(i+windowRadius));
@@ -24,7 +24,7 @@ public class MovingAverage {
 			vb.set(i, sum.divideBy(2*windowRadius));
 		}
 		
-		for(int i = data.size()-windowRadius; i <= data.size(); i++){
+		for(int i = data.size()-windowRadius; i < data.size(); i++){
 			Complex sum = new Complex();
 			for(int j =i; j<=data.size(); j++){
 				sum = sum.add(data.get(j));

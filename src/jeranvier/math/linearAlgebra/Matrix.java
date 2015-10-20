@@ -24,11 +24,11 @@ public class Matrix implements MatrixOperations<Matrix>{
 	}
 	
 	public Complex get(int row, int column){
-		return this.data[row-1][column-1];
+		return this.data[row][column];
 	}
 	
 	public double getRe(int row, int column){
-		return this.data[row-1][column-1].a();
+		return this.data[row][column].a();
 	}
 	
 	public Matrix transpose(){
@@ -36,7 +36,7 @@ public class Matrix implements MatrixOperations<Matrix>{
 		
 		for(int rowIndex=0; rowIndex<rows; rowIndex++){
 			for(int columnIndex=0; columnIndex < columns; columnIndex++){
-				mb.set(columnIndex+1, rowIndex+1, this.data[rowIndex][columnIndex]);
+				mb.set(columnIndex, rowIndex, this.data[rowIndex][columnIndex]);
 			}
 		}
 		
@@ -68,7 +68,7 @@ public class Matrix implements MatrixOperations<Matrix>{
 		Matrix.Builder mb = new Matrix.Builder(rows, columns);
 		for(int rowIndex=0; rowIndex<rows; rowIndex++){
 			for(int columnIndex=0; columnIndex<columns; columnIndex++){
-				mb.set(rowIndex+1, columnIndex+1, this.data[rowIndex][columnIndex].add(that.data[rowIndex][columnIndex]));
+				mb.set(rowIndex, columnIndex, this.data[rowIndex][columnIndex].add(that.data[rowIndex][columnIndex]));
 			}
 		}
 		return mb.build();
@@ -82,7 +82,7 @@ public class Matrix implements MatrixOperations<Matrix>{
 		Matrix.Builder mb = new Matrix.Builder(rows, columns);
 		for(int rowIndex=0; rowIndex<rows; rowIndex++){
 			for(int columnIndex=0; columnIndex<columns; columnIndex++){
-				mb.set(rowIndex+1, columnIndex+1, this.data[rowIndex][columnIndex].substract(that.data[rowIndex][columnIndex]));
+				mb.set(rowIndex, columnIndex, this.data[rowIndex][columnIndex].substract(that.data[rowIndex][columnIndex]));
 			}
 		}
 		return mb.build();
@@ -96,7 +96,7 @@ public class Matrix implements MatrixOperations<Matrix>{
 		Matrix.Builder mb = new Matrix.Builder(rows, columns);
 		for(int rowIndex=0; rowIndex<rows; rowIndex++){
 			for(int columnIndex=0; columnIndex<columns; columnIndex++){
-				mb.set(rowIndex+1, columnIndex+1, this.data[rowIndex][columnIndex].multiplyBy(that.data[rowIndex][columnIndex]));
+				mb.set(rowIndex, columnIndex, this.data[rowIndex][columnIndex].multiplyBy(that.data[rowIndex][columnIndex]));
 			}
 		}
 		return mb.build();
@@ -114,7 +114,7 @@ public class Matrix implements MatrixOperations<Matrix>{
 				for(int k=0; k<this.columns; k++){
 					c = c.add(this.data[i][k].multiplyBy(that.data[k][j]));
 				}
-				mb.set(i+1, j+1, c);
+				mb.set(i, j, c);
 			}
 		}
 		return mb.build();
@@ -131,7 +131,7 @@ public class Matrix implements MatrixOperations<Matrix>{
 		Matrix.Builder mb = new Matrix.Builder(rows, columns);
 		for(int rowIndex=0; rowIndex<rows; rowIndex++){
 			for(int columnIndex=0; columnIndex<columns; columnIndex++){
-				mb.set(rowIndex+1, columnIndex+1, this.data[rowIndex][columnIndex].conjugate());
+				mb.set(rowIndex, columnIndex, this.data[rowIndex][columnIndex].conjugate());
 			}
 		}
 		return mb.build();
@@ -142,7 +142,7 @@ public class Matrix implements MatrixOperations<Matrix>{
 		Matrix.Builder mb = new Matrix.Builder(columns, rows);
 		for(int rowIndex=0; rowIndex<rows; rowIndex++){
 			for(int columnIndex=0; columnIndex<columns; columnIndex++){
-				mb.set(columnIndex+1, rowIndex+1, this.data[rowIndex][columnIndex].conjugate());
+				mb.set(columnIndex, rowIndex, this.data[rowIndex][columnIndex].conjugate());
 			}
 		}
 		return mb.build();
@@ -153,7 +153,7 @@ public class Matrix implements MatrixOperations<Matrix>{
 		Matrix.Builder mb = new Matrix.Builder(rows, columns);
 		for(int rowIndex=0; rowIndex<rows; rowIndex++){
 			for(int columnIndex=0; columnIndex<columns; columnIndex++){
-				mb.set(rowIndex+1, columnIndex+1, this.data[rowIndex][columnIndex].add(n));
+				mb.set(rowIndex, columnIndex, this.data[rowIndex][columnIndex].add(n));
 			}
 		}
 		return mb.build();
@@ -164,7 +164,7 @@ public class Matrix implements MatrixOperations<Matrix>{
 		Matrix.Builder mb = new Matrix.Builder(rows, columns);
 		for(int rowIndex=0; rowIndex<rows; rowIndex++){
 			for(int columnIndex=0; columnIndex<columns; columnIndex++){
-				mb.set(rowIndex+1, columnIndex+1, this.data[rowIndex][columnIndex].substract(n));
+				mb.set(rowIndex, columnIndex, this.data[rowIndex][columnIndex].substract(n));
 			}
 		}
 		return mb.build();
@@ -175,7 +175,7 @@ public class Matrix implements MatrixOperations<Matrix>{
 		Matrix.Builder mb = new Matrix.Builder(rows, columns);
 		for(int rowIndex=0; rowIndex<rows; rowIndex++){
 			for(int columnIndex=0; columnIndex<columns; columnIndex++){
-				mb.set(rowIndex+1, columnIndex+1, this.data[rowIndex][columnIndex].multiplyBy(n));
+				mb.set(rowIndex, columnIndex, this.data[rowIndex][columnIndex].multiplyBy(n));
 			}
 		}
 		return mb.build();
@@ -186,7 +186,7 @@ public class Matrix implements MatrixOperations<Matrix>{
 		Matrix.Builder mb = new Matrix.Builder(rows, columns);
 		for(int rowIndex=0; rowIndex<rows; rowIndex++){
 			for(int columnIndex=0; columnIndex<columns; columnIndex++){
-				mb.set(rowIndex+1, columnIndex+1, this.data[rowIndex][columnIndex].divideBy(n));
+				mb.set(rowIndex, columnIndex, this.data[rowIndex][columnIndex].divideBy(n));
 			}
 		}
 		return mb.build();
@@ -207,22 +207,23 @@ public class Matrix implements MatrixOperations<Matrix>{
 	}
 	
 	public Matrix computerLowerTriangular() {
-		Builder mb = new Builder(this.data);
-		for(int i=2; i<=mb.columns; i++){
-			for(int k=1; k<i; k++){
-				Complex coeff = mb.get(k,i).divideBy(mb.get(k, k));
-				for(int j=1; j<=mb.rows; j++){
-					mb.set(j, i, mb.get(j, i).substract(coeff.multiplyBy(mb.get(j, k))));
-				}
-			}
-		}		
-		return mb.build();
+		throw new IllegalArgumentException("error in the method. Matematically incorrect");
+//		Builder mb = new Builder(this.data);
+//		for(int i=2; i<=mb.columns; i++){
+//			for(int k=1; k<i; k++){
+//				Complex coeff = mb.get(k,i).divideBy(mb.get(k, k));
+//				for(int j=1; j<=mb.rows; j++){
+//					mb.set(j, i, mb.get(j, i).substract(coeff.multiplyBy(mb.get(j, k))));
+//				}
+//			}
+//		}		
+//		return mb.build();
 	}
 	
 	public static Matrix identity(int columns) {
 		Builder builder = new Builder(columns, columns);
-		for(int i = 1; i <= columns; i++){
-			for(int j = 1; j <= columns; j++){
+		for(int i = 0; i < columns; i++){
+			for(int j = 0; j < columns; j++){
 				if(i==j){
 					builder.set(i, j, 1);					
 				}else{
@@ -235,8 +236,8 @@ public class Matrix implements MatrixOperations<Matrix>{
 	
 	public double[][] re() {
 		double[][] re = new double[data.length][data[0].length];
-		for(int i = 0; i <data.length; i++){
-			for(int j = 0; j< data[0].length; j++){
+		for(int i = 0; i < data.length; i++){
+			for(int j = 0; j < data[0].length; j++){
 				re[i][j] = data[i][j].re();
 			}
 		}
@@ -261,15 +262,15 @@ public class Matrix implements MatrixOperations<Matrix>{
 		}
 		
 		public void set(int row, int column, Complex value){
-			this.data[row-1][column-1] = value;
+			this.data[row][column] = value;
 		}
 		
 		public void set(int row, int column, double value){
-			this.data[row-1][column-1] = new Complex(value, 0d);
+			this.data[row][column] = new Complex(value, 0d);
 		}
 		
 		public Complex get(int row, int column){
-			return this.data[row-1][column-1];
+			return this.data[row][column];
 		}
 		
 		public Matrix build(){

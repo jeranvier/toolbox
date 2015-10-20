@@ -33,13 +33,13 @@ public class Fourier {
 			System.out.println("was: "+in.size()+", and is now: "+power);
 			Vector.Builder vb = new Vector.Builder(power);
 
-			int i = 1;
+			int i = 0;
 			for(Complex c : in){
 				vb.set(i, c);
 				i++;
 			}
 			
-			for(int j = i; j<=power;j++){
+			for(int j = i; j< power;j++){
 				vb.set(j, new Complex());
 			}
 			return vb.build();

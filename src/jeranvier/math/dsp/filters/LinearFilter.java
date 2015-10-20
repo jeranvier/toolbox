@@ -25,7 +25,7 @@ public class LinearFilter {
 	public Complex processData(Complex x_n){
 		window.removeLast();
 		window.addFirst(x_n);
-		return weights.hermitianTranspose().multiplyBy(dequeToVector(window).transpose()).get(1, 1);
+		return weights.hermitianTranspose().multiplyBy(dequeToVector(window).transpose()).get(0, 0);
 	}
 	
 	protected void setWindow(Deque<Complex> window){
@@ -34,7 +34,7 @@ public class LinearFilter {
 
 	protected Vector dequeToVector(Deque<Complex> window) {
 		Vector.Builder builder = new Vector.Builder(window.size());
-		int i = 1;
+		int i = 0;
 		for(Complex element : window){
 			builder.set(i, element);
 			i++;

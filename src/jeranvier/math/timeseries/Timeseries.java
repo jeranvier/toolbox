@@ -226,7 +226,7 @@ public class Timeseries extends TreeMap<Long,Double> implements Serializable{
 
 	public Vector vector() {
 		Vector.Builder vb = new Vector.Builder(this.size());
-		int i=1;
+		int i=0;
 		for(Double value : this.values()){
 			vb.set(i, new Complex(value, 0.0));
 			i++;
