@@ -10,7 +10,7 @@ import jeranvier.math.util.Complex;
 public class LinearFilter {
 	
 	protected final int order;
-	protected Deque<Complex> window;
+	protected Deque<Complex> window; //should be replaced by simple queue
 	protected Matrix weights;
 
 	public LinearFilter(int order) {

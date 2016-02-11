@@ -85,7 +85,7 @@ public class TimeseriesCollection implements Serializable{
 				data.put(key, values);
 		}
 		
-		public void putTimeseries(String name, Timeseries timeseries){		
+		public Builder putTimeseries(String name, Timeseries timeseries){		
 		if(!labels.containsKey(name)){
 			labels.put(name, labels.size());
 		}
@@ -93,7 +93,7 @@ public class TimeseriesCollection implements Serializable{
 		for(Entry<Long, Double> element:timeseries.entrySet()){
 			putElement(element.getKey(), name, element.getValue());
 		}
-		
+		return this;
 	}
 		
 		public TimeseriesCollection build(){

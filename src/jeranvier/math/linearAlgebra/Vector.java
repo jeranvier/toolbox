@@ -23,13 +23,13 @@ public class Vector extends Matrix implements Iterable<Complex>{
 	}
 	
 	public Complex get(int column){
-		return this.data[0][column];
+		return this.data[0][column-1];
 	}
 	
 	public Vector getRange(int min, int max){
 		Vector.Builder vb = new Vector.Builder(max - min +1);
 		for(int i = min; i <= max; i++){
-			vb.set(i-min, this.get(i));
+			vb.set(i-min+1, this.get(i));
 		}
 		
 		return vb.build();
@@ -47,7 +47,7 @@ public class Vector extends Matrix implements Iterable<Complex>{
 			throw new IllegalArgumentException();
 		}
 		Complex sum = new Complex();
-		for(int i=0; i< this.columns; i++){
+		for(int i=1; i<=this.columns; i++){
 			sum = sum.add(this.get(i).multiplyBy(that.get(i)));
 		}
 		return sum;
@@ -76,15 +76,15 @@ public class Vector extends Matrix implements Iterable<Complex>{
 		}
 
 		public void set(int column, Complex value){
-			this.data[0][column] = value;
+			this.data[0][column-1] = value;
 		}
 		
 		public void set(int column, double value){
-			this.data[0][column] = new Complex(value, 0d);
+			this.data[0][column-1] = new Complex(value, 0d);
 		}
 		
 		public Complex get(int column){
-			return this.data[0][column];
+			return this.data[0][column-1];
 		}
 		
 		public Vector build(){
@@ -94,7 +94,7 @@ public class Vector extends Matrix implements Iterable<Complex>{
 
 	public static Vector zeros(int size) {
 		Builder b = new Builder(size);
-		for(int i=0; i<size; i++){
+		for(int i=1; i<=size; i++){
 			b.set(i, 0);
 		}
 		return b.build();

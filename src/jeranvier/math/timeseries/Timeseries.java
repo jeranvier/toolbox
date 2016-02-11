@@ -176,7 +176,15 @@ public class Timeseries extends TreeMap<Long,Double> implements Serializable{
 			return get(key);
 		}
 		else{
-			return resampler.interpolate(this.floorEntry(key), key, this.ceilingEntry(key));
+			java.util.Map.Entry<Long, Double> floor = this.floorEntry(key);
+			java.util.Map.Entry<Long, Double> ceiling = this.ceilingEntry(key);
+			if(floor == null){
+				return ceiling.getValue();
+			}
+			if(ceiling == null){
+				return floor.getValue();
+			}
+			return resampler.interpolate(floor, key, ceiling);
 		}
 	}
 	
@@ -226,7 +234,7 @@ public class Timeseries extends TreeMap<Long,Double> implements Serializable{
 
 	public Vector vector() {
 		Vector.Builder vb = new Vector.Builder(this.size());
-		int i=0;
+		int i=1;
 		for(Double value : this.values()){
 			vb.set(i, new Complex(value, 0.0));
 			i++;
