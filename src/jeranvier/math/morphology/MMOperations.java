@@ -61,12 +61,20 @@ public class MMOperations {
 	}
 
 	public static Vector topHat(Vector f , StructuringElement g){
-		return new Vector(f.getRange(2*g.getCenterIndex()+1, f.size()-2*(g.size()-g.getCenterIndex())).substract(open(f, g)).data());
+		return new Vector(f.getRange(g.size(), f.size()-g.size()-1).substract(open(f, g)).data());
 	}
 
 	public static Vector bottomHat(Vector f , StructuringElement g){
-		return new Vector(f.getRange(2*g.getCenterIndex()+1, f.size()-2*(g.size()-g.getCenterIndex())).substract(close(f, g)).data());
+		return new Vector(f.getRange(g.size(), f.size()-g.size()-1).substract(close(f, g)).data());
 	}
+//	
+//	public static Vector topHat(Vector f , StructuringElement g){
+//		return new Vector(f.getRange(2*g.getCenterIndex()+1, f.size()-2*(g.size()-g.getCenterIndex())).substract(open(f, g)).data());
+//	}
+//
+//	public static Vector bottomHat(Vector f , StructuringElement g){
+//		return new Vector(f.getRange(2*g.getCenterIndex()+1, f.size()-2*(g.size()-g.getCenterIndex())).substract(close(f, g)).data());
+//	}
 
 	private static double[] reverse(double[] g){
 		double[] reversedG = g;
