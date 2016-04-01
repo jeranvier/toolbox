@@ -24,17 +24,19 @@ public class ChartFrame<X, Y> extends JFrame{
 	}
 	
 	public static void main(String args[]){
-		int NUMBER_OF_POINTS = 600000; //per timeseries
+		int NUMBER_OF_POINTS = 60000; //per timeseries
 		TimeseriesCollection.Builder tscb = new TimeseriesCollection.Builder();
 		Timeseries.Builder tsb = new Timeseries.Builder();
-		for(double i = 0; i <NUMBER_OF_POINTS; i++){
-			tsb.put((long) i, Math.sqrt(i));
+		for(double i = -NUMBER_OF_POINTS/2; i <NUMBER_OF_POINTS/2; i++){
+			double v = Math.exp(-i*i/(2*3000*3000))/(3000*Math.sqrt(2*Math.PI));
+			tsb.put((long) i, v);
 		}
 		tscb.putTimeseries("a", tsb.build());
 		
 		tsb = new Timeseries.Builder();
-		for(double i = 0; i <NUMBER_OF_POINTS; i++){
-			tsb.put((long) i, 10*Math.cos(i/10));
+		for(double i = -NUMBER_OF_POINTS/2; i <NUMBER_OF_POINTS/2; i++){
+			double v = Math.exp(-i*i/(2*2000*2000))/(2000*Math.sqrt(2*Math.PI));
+			tsb.put((long) i, v);
 		}
 		tscb.putTimeseries("b", tsb.build());
 		Chart<Long, Double> chart = new TimeChart(tscb.build());
@@ -45,6 +47,14 @@ public class ChartFrame<X, Y> extends JFrame{
 		cf.pack();
 		cf.revalidate();
 		cf.setVisible(true);
+	}
+
+	public void display() {
+		setLocation(200, 200);
+		pack();
+		revalidate();
+		repaint();
+		setVisible(true);		
 	}
 
 }

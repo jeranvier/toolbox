@@ -15,6 +15,7 @@ public class PrettyChart<X, Y> extends JPanel{
 		this.setBackground(Color.WHITE);
 
 		JPanel cross = new JPanel();
+		cross.setBackground(Color.WHITE);
 		Axis vertical = new VerticalAxis(chart.verticalAxisFormater());
 		Axis horizontal = new HorizontalAxis(chart.horizontalAxisFormater());
 		chart.addChartListener(vertical);

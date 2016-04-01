@@ -1,5 +1,8 @@
 package jeranvier.math.timeseries;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.io.Serializable;
 import java.util.Collection;
 import java.util.Iterator;
@@ -9,6 +12,9 @@ import java.util.SortedMap;
 import java.util.TreeMap;
 import java.util.concurrent.ArrayBlockingQueue;
 
+import jeranvier.io.CSVHandler;
+import jeranvier.io.CSVStreamingHandler;
+import jeranvier.io.CSVStreamingHandler.Record;
 import jeranvier.math.linearAlgebra.Matrix;
 import jeranvier.math.linearAlgebra.Vector;
 import jeranvier.math.stats.SimpleStats;
@@ -39,6 +45,25 @@ public class Timeseries extends TreeMap<Long,Double> implements Serializable{
 			 if(element.getKey() >= start && element.getKey() < end){
 				 tsb.put(element.getKey(), element.getValue());
 			 }
+		 }
+		 return tsb.build();
+	}
+	
+	public Timeseries translate(Long diff){
+		 Builder tsb = new Timeseries.Builder();
+		 for(Map.Entry<Long, Double> element : this.entrySet()){
+			 tsb.put(element.getKey()+diff, element.getValue());
+		 }
+		 return tsb.build();
+	}
+	
+	public Timeseries splice(Timeseries that){
+		 Builder tsb = new Timeseries.Builder();
+		 for(Map.Entry<Long, Double> element : this.entrySet()){
+			 tsb.put(element.getKey(), element.getValue());
+		 }
+		 for(Map.Entry<Long, Double> element : that.entrySet()){
+			 tsb.put(element.getKey(), element.getValue());
 		 }
 		 return tsb.build();
 	}
@@ -195,11 +220,23 @@ public class Timeseries extends TreeMap<Long,Double> implements Serializable{
 	public static final class Builder{
 		SortedMap<Long, Double> data;
 		public Builder(){
-			data = new TreeMap<>();
+			this.data = new TreeMap<>();
+		}
+		
+		public Builder(Map<Long, Double> data){
+			this.data = new TreeMap<>(data);
 		}
 
 		public void put(Long key, double value) {
 			data.put(key, value);
+		}
+		
+		public static Timeseries zeros(long start, long stop, long step){
+			Builder z = new Builder();
+			for(long i=start;i<stop; i+=step){
+				z.put(i, 0);
+			}
+			return z.build();
 		}
 
 		public Timeseries build() {
@@ -240,6 +277,40 @@ public class Timeseries extends TreeMap<Long,Double> implements Serializable{
 			i++;
 		}
 		return vb.build();
+	}
+	
+	public static Timeseries load(File file) throws IOException{
+		Timeseries.Builder b = new Timeseries.Builder();
+		CSVStreamingHandler csh = new CSVStreamingHandler(CSVHandler.TAB, CSVHandler.EMPTY, false, file.getAbsolutePath());
+		
+		while(csh.hasNext()){
+			Record next = csh.next();
+			b.put(next.getLong(0), next.getDouble(1));
+		}
+		return b.build();
+	}
+
+	public Timeseries substituteFrom(long start, Vector values) {
+		Builder tsb = new Timeseries.Builder();
+		int i = 1;
+		for(Map.Entry<Long, Double> element : this.entrySet()){
+			if(element.getKey()<start){
+				//don't alter the timeseries
+				tsb.put(element.getKey(), element.getValue());
+			}else{
+				if(i <= values.size()){
+					tsb.put(element.getKey(), values.get(i).re());
+					i++;
+				}else{
+					//nothing else to substitute
+					tsb.put(element.getKey(), element.getValue());					
+				}
+			}
+		}
+		if(i+1 <= values.size()){
+			throw new IllegalArgumentException("operation with incompatible sizes. Some values could not be copied.");
+		}
+		return tsb.build();
 	}
 	
 }

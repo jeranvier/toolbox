@@ -1,5 +1,6 @@
 package jeranvier.ui.chart;
 
+import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
@@ -10,8 +11,12 @@ import java.awt.geom.Point2D;
 import java.awt.image.AffineTransformOp;
 import java.text.Format;
 import java.text.SimpleDateFormat;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Map.Entry;
 import java.util.TreeMap;
+
+import javax.swing.border.StrokeBorder;
 
 import jeranvier.math.timeseries.Timeseries;
 import jeranvier.math.timeseries.TimeseriesCollection;
@@ -22,6 +27,7 @@ public class TimeChart extends Chart<Long, Double>{
 	private static final Color BACKGROUND = Color.white;
 	private int MIN_DISTANCE_BETWEEN_POINTS = 3; //in px
 	private SimpleDateFormat dateParser;
+	private Entry<Long, Double> highlightedDataPoint;
 
 	public TimeChart(String label, Timeseries model){
 		this.data.put(label,  model);
@@ -52,7 +58,7 @@ public class TimeChart extends Chart<Long, Double>{
 		
 		g2d.setColor(BACKGROUND);
 		g2d.fillRect(0, 0, this.getWidth(), this.getHeight());
-		
+//		g2d.setStroke(new BasicStroke(2));
 		g2d.setColor(Color.BLUE);
 				
 		
@@ -84,7 +90,12 @@ public class TimeChart extends Chart<Long, Double>{
 					firstPoint = false;
 				}
 				
-				if(Math.abs(x-previousX) > MIN_DISTANCE_BETWEEN_POINTS || Math.abs(y-previousY) > MIN_DISTANCE_BETWEEN_POINTS){	
+				if(datapoint.equals(highlightedDataPoint)){
+					g2d.fillOval(x-4, y-4, 8, 8);
+					displayHighlightedPoint(g2d, datapoint);
+				}
+				
+				if(Math.abs(x-previousX) > MIN_DISTANCE_BETWEEN_POINTS || Math.abs(y-previousY) > MIN_DISTANCE_BETWEEN_POINTS){
 //					g2d.fillOval(x-2, y-2, 4, 4);
 					if(firstPoint){
 						firstPoint = false;
@@ -98,6 +109,17 @@ public class TimeChart extends Chart<Long, Double>{
 		}
 	}
 	
+	private void displayHighlightedPoint(Graphics2D g2d, Entry<Long, Double> datapoint) {
+		g2d.scale(1, -1);
+		g2d.translate(0, -this.getHeight());
+		g2d.drawString("x: "+datapoint.getKey(), this.getWidth()-200, 20);
+		g2d.drawString("y: "+datapoint.getValue(), this.getWidth()-200, 50);
+		g2d.scale(1, -1);
+		g2d.translate(0, -this.getHeight());
+	}
+
+
+
 	private void computeBoundaries() {
 		Double minX = Double.POSITIVE_INFINITY;
 		Double maxX = Double.NEGATIVE_INFINITY;
@@ -132,5 +154,39 @@ public class TimeChart extends Chart<Long, Double>{
 	@Override
 	public Format horizontalAxisFormater() {
 		return new SimpleDateFormat("HH:mm:ss.SSS");
+	}
+	
+	@Override
+	public void highlightClosestDataPoint(int x, int y) {
+		Point2D.Double pixelPoint = new Point2D.Double(x, this.getHeight()-y);
+		Point2D.Double dataPoint = new Point2D.Double();
+		currentSpace.pixelToSpace(pixelPoint, dataPoint);
+		
+		Map<Entry<Long, Double>, Double> distances = new HashMap<>();
+		
+		for(TreeMap<Long, Double> series : data.values()){
+			Entry<Long, Double> entry = series.floorEntry((long) dataPoint.getX());
+			if(entry!= null){
+				double distance = Math.abs(entry.getValue() - dataPoint.getY());
+				distances.put(entry,  distance);
+			}
+		}
+		
+		double minDistance = Double.POSITIVE_INFINITY;
+		Entry<Long, Double> winner = null;
+		for(Entry<Entry<Long, Double>, Double> distanceEntry : distances.entrySet()){
+			if(distanceEntry.getValue() < minDistance){
+				minDistance = distanceEntry.getValue();
+				winner = distanceEntry.getKey();
+			}
+		}
+		
+		if(winner != null){
+			highlightedDataPoint = winner;
+			Chart.clipboardHandler.setClipboardContent(winner.getKey()+"\t"+winner.getValue());
+		}else{
+			highlightedDataPoint = null;
+		}
+		this.repaint();
 	}
 }

@@ -3,6 +3,11 @@ package jeranvier.ui.chart;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.LayoutManager;
+import java.awt.Toolkit;
+import java.awt.datatransfer.Clipboard;
+import java.awt.datatransfer.ClipboardOwner;
+import java.awt.datatransfer.StringSelection;
+import java.awt.datatransfer.Transferable;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.NoninvertibleTransformException;
 import java.awt.geom.Point2D;
@@ -21,6 +26,7 @@ public abstract class Chart <X, Y> extends JPanel{
 	protected Space currentSpace;
 	protected Space totalSpace;
 	protected static final double DATA_SPACE_MARGINS = 0.05; //in percentage
+	protected static final ClipboardHandler clipboardHandler = new ClipboardHandler();
 	private List<ChartListener> chartListeners;
 	
 	public Chart(){
@@ -91,5 +97,22 @@ public abstract class Chart <X, Y> extends JPanel{
 	public abstract Format verticalAxisFormater();
 
 	public abstract Format horizontalAxisFormater();
+
+	public abstract void highlightClosestDataPoint(int x, int y);
+	
+	public static final class ClipboardHandler implements ClipboardOwner {
+
+		@Override
+		public void lostOwnership(Clipboard clipboard, Transferable contents) {
+		}
+		
+		public void setClipboardContent(String string){
+		    StringSelection stringSelection = new StringSelection(string);
+		    Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
+		    clipboard.setContents(stringSelection, this);
+		  }
+		
+	}
+
 
 }

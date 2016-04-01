@@ -9,10 +9,11 @@ public class ButterworthFilter {
 	private final double sampleRate;
 	private final int filterOrder;
 	private final double DCGain;
-
-	public ButterworthFilter(double sampleRate, double frequencyCut, int filterOrder, double DCGain){
+	
+	//low pass filter
+	public ButterworthFilter(double samplingRate, double frequencyCut, int filterOrder, double DCGain){
 		this.frequencyCut = frequencyCut;
-		this.sampleRate = sampleRate;
+		this.sampleRate = samplingRate;//in Hz
 		this.filterOrder = filterOrder;
 		this.DCGain = DCGain;	
 	}

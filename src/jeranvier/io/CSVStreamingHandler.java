@@ -17,16 +17,19 @@ public class CSVStreamingHandler{
 	private BufferedReader br;
 	private Record next;
 	
-	public CSVStreamingHandler(char separator, char quote, boolean headerAvailable, String filePath) throws FileNotFoundException{
+	public CSVStreamingHandler(char separator, char quote, boolean headerAvailable, String filePath) throws IOException{
 		this.separator = separator;
 		this.quote = quote;
 		this.headerAvailable = headerAvailable;
 		this.records = new ArrayList<Record>();
 		this.br = new BufferedReader(new FileReader(filePath));
+		this.br.mark((int) Math.pow(2, 10));
 		try {
 			if(this.headerAvailable){
 				header = parseHeader(br.readLine());
 				numberOfFields = header.getNumberOfFields();
+			}else{
+				numberOfFields = determineNumberOfFields();
 			}
 		} catch (IOException e) {
 			System.err.println("Error while parsing the header of: "+filePath);
@@ -35,6 +38,13 @@ public class CSVStreamingHandler{
 		this.next = readNext();
 	}
 	
+	private int determineNumberOfFields() throws IOException {
+		String line = this.br.readLine();
+		int numberOfField = parseFields(line).size();
+		this.br.reset();
+		return numberOfField;
+	}
+
 	public Record next(){
 		if(this.next==null){
 			return null;
