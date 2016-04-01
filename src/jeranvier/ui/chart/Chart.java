@@ -1,8 +1,11 @@
 package jeranvier.ui.chart;
 
+import java.awt.BasicStroke;
+import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.LayoutManager;
+import java.awt.Stroke;
 import java.awt.Toolkit;
 import java.awt.datatransfer.Clipboard;
 import java.awt.datatransfer.ClipboardOwner;
@@ -27,6 +30,14 @@ public abstract class Chart <X, Y> extends JPanel{
 	protected Space totalSpace;
 	protected static final double DATA_SPACE_MARGINS = 0.05; //in percentage
 	protected static final ClipboardHandler clipboardHandler = new ClipboardHandler();
+	public static final Color[] colors = new Color[]{
+		Color.decode("#7B1FA2"),
+		Color.decode("#FFAB00"),
+		Color.decode("#4A148C"),
+		Color.decode("#880E4F"),
+		Color.decode("#1B5E20"),
+		Color.decode("#006064")};
+	public static final Stroke stroke = new BasicStroke(2);
 	private List<ChartListener> chartListeners;
 	
 	public Chart(){

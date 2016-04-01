@@ -2,21 +2,17 @@ package jeranvier.ui.chart;
 
 import java.awt.BasicStroke;
 import java.awt.Color;
-import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
-import java.awt.geom.AffineTransform;
-import java.awt.geom.NoninvertibleTransformException;
+import java.awt.Paint;
+import java.awt.RenderingHints;
 import java.awt.geom.Point2D;
-import java.awt.image.AffineTransformOp;
 import java.text.Format;
 import java.text.SimpleDateFormat;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.TreeMap;
-
-import javax.swing.border.StrokeBorder;
 
 import jeranvier.math.timeseries.Timeseries;
 import jeranvier.math.timeseries.TimeseriesCollection;
@@ -55,14 +51,15 @@ public class TimeChart extends Chart<Long, Double>{
 	public void paintComponent(Graphics g){
 		super.paintComponent(g);
 		Graphics2D g2d = (Graphics2D)g;
+		g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, // Anti-alias!
+		        RenderingHints.VALUE_ANTIALIAS_ON);
 		
-		g2d.setColor(BACKGROUND);
-		g2d.fillRect(0, 0, this.getWidth(), this.getHeight());
-//		g2d.setStroke(new BasicStroke(2));
-		g2d.setColor(Color.BLUE);
-				
+		g2d.clearRect(0, 0, this.getWidth(), this.getHeight());
+		g2d.setStroke(Chart.stroke);
 		
+		int i = 0;
 		for(TreeMap<Long, Double> series : this.data.values()){
+			g2d.setColor(Chart.colors[i%Chart.colors.length]);
 			Point2D previousPixel = new Point2D.Double(0, 0);
 			boolean previousVisible = true;
 			Point2D data = new Point2D.Double();
@@ -105,7 +102,8 @@ public class TimeChart extends Chart<Long, Double>{
 					previousPixel = new Point2D.Double(pixel.getX(), pixel.getY());
 					previousVisible = true;
 				}
-			}		
+			}	
+			i++;
 		}
 	}
 	
