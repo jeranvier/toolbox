@@ -31,6 +31,19 @@ public class TimeseriesCollection implements Serializable{
 		return sb.toString();
 	}
 	
+	public SortedMap<Integer,Map<Long, Double>> getTimeSeries(){
+		SortedMap<Integer,Map<Long, Double>> result = new TreeMap<Integer,Map<Long, Double>>();
+		for(Integer labelId:labels.values()){
+			result.put(labelId, new TreeMap<>());
+		}
+		for(Long i :this.data.keySet()){
+			for(Integer labelId:labels.values()){
+				result.get(labelId).put(i, this.data.get(i).get(labelId));
+			}
+		}
+		return result;
+	}
+	
 	public Timeseries getTimeSeries(String name){
 		Timeseries.Builder tsb = new Timeseries.Builder();
 		if(labels.containsKey(name)){
@@ -59,6 +72,10 @@ public class TimeseriesCollection implements Serializable{
 	
 	public Set<String> getLabels(){
 		return labels.keySet();
+	}
+	
+	public Map<String, Integer> getLabelsData(){
+		return this.labels;
 	}
 	
 	public static final class Builder{

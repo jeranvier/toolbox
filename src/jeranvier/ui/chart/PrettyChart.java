@@ -5,7 +5,7 @@ import java.awt.Color;
 import javax.swing.GroupLayout;
 import javax.swing.JPanel;
 
-public class PrettyChart<X, Y> extends JPanel{
+public class PrettyChart<X extends Number, Y extends Number> extends JPanel{
 	
 	private Chart<X,Y> chart;
 	

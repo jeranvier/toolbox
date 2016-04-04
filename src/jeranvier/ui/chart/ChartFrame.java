@@ -1,20 +1,16 @@
 package jeranvier.ui.chart;
 
-import java.awt.BorderLayout;
 import java.awt.Color;
-import java.awt.Component;
 import java.awt.Dimension;
 
-import javax.swing.GroupLayout;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 
 import jeranvier.math.timeseries.Timeseries;
 import jeranvier.math.timeseries.TimeseriesCollection;
 
-public class ChartFrame<X, Y> extends JFrame{
+public class ChartFrame<X extends Number, Y extends Number> extends JFrame{
 	private static final long serialVersionUID = -0L;
-	private Chart<X,Y> chart;
 	
 	public ChartFrame(JPanel prettyChart){
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
