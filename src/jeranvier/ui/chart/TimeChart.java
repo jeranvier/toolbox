@@ -3,6 +3,7 @@ package jeranvier.ui.chart;
 import java.text.Format;
 import java.text.SimpleDateFormat;
 
+import jeranvier.math.timeseries.Timeseries;
 import jeranvier.math.timeseries.TimeseriesCollection;
 
 public class TimeChart extends Chart<Long, Double>{
@@ -10,7 +11,12 @@ public class TimeChart extends Chart<Long, Double>{
 	private static final long serialVersionUID = 1L;
 
 	public TimeChart(TimeseriesCollection tsc) {
-			super(tsc.getLabelsData(), tsc.getTimeSeries());
+		super(tsc.getLabelsData(), tsc.getTimeSeries());
+	}
+	
+	public TimeChart(String label, Timeseries ts) {
+		super(label, ts);
+		
 	}
 
 	@Override

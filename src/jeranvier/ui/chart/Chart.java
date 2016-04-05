@@ -44,7 +44,7 @@ public abstract class Chart <X extends Number, Y extends Number> extends JPanel{
 		Color.decode("#880E4F"),
 		Color.decode("#1B5E20"),
 		Color.decode("#006064")};
-	public static final Stroke stroke = new BasicStroke(2);
+	public static Stroke stroke = new BasicStroke(2);
 	private List<ChartListener> chartListeners;
 	
 	private int MIN_DISTANCE_BETWEEN_POINTS = 1; //in px
@@ -61,11 +61,30 @@ public abstract class Chart <X extends Number, Y extends Number> extends JPanel{
 	
 	public Chart(Map<String, Integer> labels, Map<Integer,Map<X, Y>> data){
 		this();
-		this.labels = labels;
+		this.labels = new HashMap(labels);
 		this.data = data;
 		computeBoundaries();
 		resetView(); 
 	}
+
+	public Chart(String label, Map<X, Y> ts) {
+		this();
+		this.labels = new HashMap<>();
+		labels.put(label, 0);
+		
+		this.data = new HashMap<>();
+		this.data.put(0, ts);
+		computeBoundaries();
+		resetView(); 
+	}
+	
+	public void addData(String label, Map<X, Y> data){
+		this.labels.put(label, this.data.size());
+		this.data.put(this.data.size(), data);
+		computeBoundaries();
+		resetView();
+	}
+
 
 	private void resetView() {
 		currentSpace = totalSpace;
@@ -160,7 +179,6 @@ public abstract class Chart <X extends Number, Y extends Number> extends JPanel{
 				}
 				
 				if(Math.abs(x-previousX) > MIN_DISTANCE_BETWEEN_POINTS || Math.abs(y-previousY) > MIN_DISTANCE_BETWEEN_POINTS){
-//					g2d.fillOval(x-2, y-2, 4, 4);
 					if(firstPoint){
 						firstPoint = false;
 					}else{

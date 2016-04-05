@@ -34,10 +34,9 @@ public class ChartFrame<X extends Number, Y extends Number> extends JFrame{
 			double v = Math.exp(-i*i/(2*2000*2000))/(2000*Math.sqrt(2*Math.PI));
 			tsb.put((long) i, v);
 		}
-		tscb.putTimeseries("b", tsb.build());
 		Chart<Long, Double> chart = new TimeChart(tscb.build());
+		chart.addData("b", tsb.build().subTimeseries((long)-NUMBER_OF_POINTS, 0l));
 		PrettyChart<Long, Double> prettyChart = new PrettyChart<Long, Double>(chart);
-		System.out.println("built");
 		ChartFrame<Long, Double> cf = new ChartFrame<>(prettyChart);
 		cf.setLocation(200, 200);
 		cf.pack();
