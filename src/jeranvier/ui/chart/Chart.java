@@ -4,7 +4,6 @@ import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
-import java.awt.LayoutManager;
 import java.awt.RenderingHints;
 import java.awt.Stroke;
 import java.awt.Toolkit;
@@ -16,18 +15,13 @@ import java.awt.geom.AffineTransform;
 import java.awt.geom.NoninvertibleTransformException;
 import java.awt.geom.Point2D;
 import java.text.Format;
-import java.text.SimpleDateFormat;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.HashMap;
-import java.util.SortedMap;
-import java.util.TreeMap;
 import java.util.Map.Entry;
 
 import javax.swing.JPanel;
-
-import jeranvier.math.timeseries.Timeseries;
 
 @SuppressWarnings("serial")
 public abstract class Chart <X extends Number, Y extends Number> extends JPanel{
@@ -61,7 +55,7 @@ public abstract class Chart <X extends Number, Y extends Number> extends JPanel{
 	
 	public Chart(Map<String, Integer> labels, Map<Integer,Map<X, Y>> data){
 		this();
-		this.labels = new HashMap(labels);
+		this.labels = new HashMap<>(labels);
 		this.data = data;
 		computeBoundaries();
 		resetView(); 

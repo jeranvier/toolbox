@@ -1,6 +1,5 @@
 package jeranvier.ui.chart;
 
-import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.geom.Point2D;
@@ -9,6 +8,8 @@ import java.text.Format;
 
 public class HorizontalAxis extends Axis{
 	
+	private static final long serialVersionUID = 1L;
+
 	public HorizontalAxis(Format formater){
 		super(formater);
 	}

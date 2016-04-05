@@ -7,6 +7,7 @@ import javax.swing.JPanel;
 
 public class PrettyChart<X extends Number, Y extends Number> extends JPanel{
 	
+	private static final long serialVersionUID = 1L;
 	private Chart<X,Y> chart;
 	
 	public PrettyChart(Chart<X,Y> chart){

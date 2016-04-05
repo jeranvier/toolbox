@@ -9,6 +9,9 @@ import java.text.Format;
 
 public class VerticalAxis extends Axis{
 
+	private static final long serialVersionUID = 1L;
+
+
 	public VerticalAxis(Format formater){
 		super(formater);
 	}

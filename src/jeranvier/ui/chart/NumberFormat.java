@@ -6,6 +6,8 @@ import java.text.ParsePosition;
 
 public class NumberFormat extends Format{
 
+	private static final long serialVersionUID = 1L;
+
 	@Override
 	public StringBuffer format(Object obj, StringBuffer toAppendTo, FieldPosition pos) {
 		return toAppendTo.append(obj);
