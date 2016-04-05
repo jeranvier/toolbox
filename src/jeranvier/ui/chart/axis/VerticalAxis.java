@@ -1,4 +1,4 @@
-package jeranvier.ui.chart;
+package jeranvier.ui.chart.axis;
 
 
 import java.awt.Graphics;

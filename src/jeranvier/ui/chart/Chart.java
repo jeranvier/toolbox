@@ -11,6 +11,8 @@ import java.awt.datatransfer.Clipboard;
 import java.awt.datatransfer.ClipboardOwner;
 import java.awt.datatransfer.StringSelection;
 import java.awt.datatransfer.Transferable;
+import java.awt.event.ComponentEvent;
+import java.awt.event.ComponentListener;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.NoninvertibleTransformException;
 import java.awt.geom.Point2D;
@@ -24,25 +26,38 @@ import java.util.Map.Entry;
 import javax.swing.JPanel;
 
 @SuppressWarnings("serial")
-public abstract class Chart <X extends Number, Y extends Number> extends JPanel{
-	protected Map<Integer, Map<X, Y>> data = new HashMap<>();
-	protected Map<String, Integer> labels = new HashMap<>();
-	protected Space currentSpace;
-	protected Space totalSpace;
+public class Chart <X extends Number, Y extends Number> extends JPanel{
+	//CONSTANTS
 	protected static final double DATA_SPACE_MARGINS = 0.05; //in percentage
-	protected static final ClipboardHandler clipboardHandler = new ClipboardHandler();
-	public static final Color[] colors = new Color[]{
+	protected static final int MARKER_SIZE = 4; //in px
+	protected static final int MIN_DISTANCE_BETWEEN_POINTS = 1; //in px
+	protected static final Stroke STROKE = new BasicStroke(2);
+	protected static final Color[] colors = new Color[]{
 		Color.decode("#7B1FA2"),
 		Color.decode("#FFAB00"),
 		Color.decode("#4A148C"),
 		Color.decode("#880E4F"),
 		Color.decode("#1B5E20"),
 		Color.decode("#006064")};
-	public static Stroke stroke = new BasicStroke(2);
-	private List<ChartListener> chartListeners;
+
 	
-	private int MIN_DISTANCE_BETWEEN_POINTS = 1; //in px
-	private Entry<X, Y> highlightedDataPoint;
+	//DATA
+	protected Map<String, Map<X, Y>> markers = new HashMap<>();
+	protected Map<Integer, Map<X, Y>> data = new HashMap<>();
+	protected Map<String, Integer> labels = new HashMap<>();
+	protected Entry<X, Y> highlightedDataPoint;
+	
+	//SPACES
+	protected Space currentSpace;
+	protected Space totalSpace;
+	
+	//AXIS
+	protected Format verticalAxisFormater;
+	protected Format horizontalAxisFormater;
+
+	//SYSMTE INTERACTION
+	private List<ChartListener> chartListeners;
+	protected static final ClipboardHandler clipboardHandler = new ClipboardHandler();
 	
 	public Chart(){
 		this.chartListeners = new LinkedList<>();
@@ -50,6 +65,9 @@ public abstract class Chart <X extends Number, Y extends Number> extends JPanel{
 		this.addMouseMotionListener(controller);
 		this.addMouseWheelListener(controller);
 		this.addMouseListener(controller);
+		this.verticalAxisFormater = new NumberFormat();
+		this.horizontalAxisFormater = new NumberFormat();
+		this.markers = new HashMap<>();
 	}
 	
 	
@@ -77,6 +95,10 @@ public abstract class Chart <X extends Number, Y extends Number> extends JPanel{
 		this.data.put(this.data.size(), data);
 		computeBoundaries();
 		resetView();
+	}
+	
+	public void addMarker(String label, Map<X, Y> marker){
+		this.markers.put(label, marker);
 	}
 
 
@@ -125,17 +147,38 @@ public abstract class Chart <X extends Number, Y extends Number> extends JPanel{
 	public void paintComponent(Graphics g){
 		super.paintComponent(g);
 		Graphics2D g2d = (Graphics2D)g;
-		AffineTransform tx = AffineTransform.getScaleInstance(1, -1);
-		tx.translate(0, -this.getHeight());
-		g2d.transform(tx);
 		currentSpace.updateSize(this.getSize());
 		notifyChartListeners();
-		
-		g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, // Anti-alias!
-		        RenderingHints.VALUE_ANTIALIAS_ON);
+		AffineTransform tx = AffineTransform.getScaleInstance(1, -1);
+		tx.translate(0, -this.getHeight());
+		g2d.transform(tx);	
+		g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 		
 		g2d.clearRect(0, 0, this.getWidth(), this.getHeight());
-		g2d.setStroke(Chart.stroke);
+		g2d.setStroke(Chart.STROKE);
+		
+		drawSeries(g2d);	
+		drawMarkers(g2d);	
+	}
+	
+	private void drawMarkers(Graphics2D g2d) {
+		int i = this.data.size();
+		for(Map<X, Y> marker : this.markers.values()){
+			g2d.setColor(Chart.colors[i%Chart.colors.length]);
+			Point2D data = new Point2D.Double();
+			Point2D pixel = new Point2D.Double();
+			for(Entry<X, Y> datapoint : marker.entrySet()){
+				data.setLocation(datapoint.getKey().doubleValue(), datapoint.getValue().doubleValue());
+				currentSpace.spaceToPixel(data, pixel);
+				int x = (int) pixel.getX();
+				int y = (int) pixel.getY();
+				MarkersDrawer.getMarker(i).draw(g2d, pixel, MARKER_SIZE);
+			}
+		}
+	}
+
+
+	protected void drawSeries(Graphics2D g2d) {
 		
 		int i = 0;
 		for(Entry<String, Integer> label : this.labels.entrySet()){
@@ -186,12 +229,13 @@ public abstract class Chart <X extends Number, Y extends Number> extends JPanel{
 		}
 		
 	}
-	
+
+
 	private void displayHighlightedPoint(Graphics2D g2d, X x, Y y) {
 		g2d.scale(1, -1);
 		g2d.translate(0, -this.getHeight());
-		g2d.drawString("x: "+x, this.getWidth()-200, 20);
-		g2d.drawString("y: "+y, this.getWidth()-200, 50);
+		g2d.drawString("x: "+this.horizontalAxisFormater().format(x), this.getWidth()-200, 20);
+		g2d.drawString("y: "+this.verticalAxisFormater().format(y), this.getWidth()-200, 50);
 		g2d.scale(1, -1);
 		g2d.translate(0, -this.getHeight());
 	}
@@ -205,9 +249,13 @@ public abstract class Chart <X extends Number, Y extends Number> extends JPanel{
 		this.repaint();
 	}
 
-	public abstract Format verticalAxisFormater();
+	public Format verticalAxisFormater(){
+		return verticalAxisFormater;
+	};
 
-	public abstract Format horizontalAxisFormater();
+	public Format horizontalAxisFormater(){
+		return horizontalAxisFormater;
+	}
 
 	public void highlightClosestDataPoint(int x, int y) {
 		Point2D.Double pixelPoint = new Point2D.Double(x, this.getHeight()-y);
@@ -289,6 +337,4 @@ public abstract class Chart <X extends Number, Y extends Number> extends JPanel{
 		  }
 		
 	}
-
-
 }

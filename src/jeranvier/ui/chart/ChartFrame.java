@@ -20,22 +20,30 @@ public class ChartFrame<X extends Number, Y extends Number> extends JFrame{
 	}
 	
 	public static void main(String args[]){
-		int NUMBER_OF_POINTS = 60000; //per timeseries
+		int NUMBER_OF_POINTS = 6000; //per timeseries
 		TimeseriesCollection.Builder tscb = new TimeseriesCollection.Builder();
 		Timeseries.Builder tsb = new Timeseries.Builder();
 		for(double i = -NUMBER_OF_POINTS/2; i <NUMBER_OF_POINTS/2; i++){
-			double v = Math.exp(-i*i/(2*3000*3000))/(3000*Math.sqrt(2*Math.PI));
+			double v = Math.exp(-i*i/(2*300*300))/(300*Math.sqrt(2*Math.PI));
 			tsb.put((long) i, v);
 		}
 		tscb.putTimeseries("a", tsb.build());
 		
 		tsb = new Timeseries.Builder();
 		for(double i = -NUMBER_OF_POINTS/2; i <NUMBER_OF_POINTS/2; i++){
-			double v = Math.exp(-i*i/(2*2000*2000))/(2000*Math.sqrt(2*Math.PI));
+			double v = Math.exp(-i*i/(2*200*200))/(200*Math.sqrt(2*Math.PI));
 			tsb.put((long) i, v);
 		}
+		tscb.putTimeseries("b", tsb.build());
+		
+		tsb = new Timeseries.Builder();
+		for(double i = -NUMBER_OF_POINTS/2; i <NUMBER_OF_POINTS/2; i++){
+			double v = Math.cos(i/300)/1000;
+			tsb.put((long) i, v);
+		}
+		tscb.putTimeseries("c", tsb.build());
+
 		Chart<Long, Double> chart = new TimeChart(tscb.build());
-		chart.addData("b", tsb.build().subTimeseries((long)-NUMBER_OF_POINTS, 0l));
 		PrettyChart<Long, Double> prettyChart = new PrettyChart<Long, Double>(chart);
 		ChartFrame<Long, Double> cf = new ChartFrame<>(prettyChart);
 		cf.setLocation(200, 200);

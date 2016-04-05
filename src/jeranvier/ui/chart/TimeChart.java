@@ -1,5 +1,6 @@
 package jeranvier.ui.chart;
 
+import java.awt.event.ComponentEvent;
 import java.text.Format;
 import java.text.SimpleDateFormat;
 

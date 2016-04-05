@@ -5,6 +5,10 @@ import java.awt.Color;
 import javax.swing.GroupLayout;
 import javax.swing.JPanel;
 
+import jeranvier.ui.chart.axis.Axis;
+import jeranvier.ui.chart.axis.HorizontalAxis;
+import jeranvier.ui.chart.axis.VerticalAxis;
+
 public class PrettyChart<X extends Number, Y extends Number> extends JPanel{
 	
 	private static final long serialVersionUID = 1L;

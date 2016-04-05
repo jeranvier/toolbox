@@ -1,4 +1,4 @@
-package jeranvier.ui.chart;
+package jeranvier.ui.chart.axis;
 
 import java.awt.Color;
 import java.awt.Dimension;
@@ -9,6 +9,9 @@ import java.awt.geom.AffineTransform;
 import java.text.Format;
 
 import javax.swing.JPanel;
+
+import jeranvier.ui.chart.ChartListener;
+import jeranvier.ui.chart.Space;
 
 public abstract class Axis extends JPanel implements ChartListener{
 	
