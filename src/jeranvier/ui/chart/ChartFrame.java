@@ -4,7 +4,6 @@ import java.awt.Color;
 import java.awt.Dimension;
 
 import javax.swing.JFrame;
-import javax.swing.JPanel;
 
 import jeranvier.math.timeseries.Timeseries;
 import jeranvier.math.timeseries.TimeseriesCollection;
@@ -12,10 +11,12 @@ import jeranvier.math.timeseries.TimeseriesCollection;
 public class ChartFrame<X extends Number, Y extends Number> extends JFrame{
 	private static final long serialVersionUID = -0L;
 	
-	public ChartFrame(JPanel prettyChart){
+	public ChartFrame(PrettyChart<X, Y> prettyChart){
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		this.getContentPane().setBackground(Color.WHITE);
 		this.setPreferredSize(new Dimension(800, 500));
+		KeyboardController keyboardController = new KeyboardController(prettyChart.getChart());
+		this.addKeyListener(keyboardController);
 		this.getContentPane().add(prettyChart);
 	}
 	

@@ -61,10 +61,10 @@ public class Chart <X extends Number, Y extends Number> extends JPanel{
 	
 	public Chart(){
 		this.chartListeners = new LinkedList<>();
-		MouseController controller = new MouseController(this);
-		this.addMouseMotionListener(controller);
-		this.addMouseWheelListener(controller);
-		this.addMouseListener(controller);
+		MouseController mouseController = new MouseController(this);
+		this.addMouseMotionListener(mouseController);
+		this.addMouseWheelListener(mouseController);
+		this.addMouseListener(mouseController);
 		this.verticalAxisFormater = new NumberFormat();
 		this.horizontalAxisFormater = new NumberFormat();
 		this.markers = new HashMap<>();

@@ -73,5 +73,9 @@ public class PrettyChart<X extends Number, Y extends Number> extends JPanel{
 		              .addComponent(horizontal, Axis.AXIS_SIZE, Axis.AXIS_SIZE, Axis.AXIS_SIZE)) 
 		   );
 	}
+	
+	public Chart<X, Y> getChart(){
+		return this.chart;
+	}
 
 }
