@@ -102,8 +102,9 @@ public class Chart <X extends Number, Y extends Number> extends JPanel{
 	}
 
 
-	private void resetView() {
-		currentSpace = totalSpace;
+	public void resetView() {
+		currentSpace = new Space(totalSpace);
+		this.repaint();
 	}
 
 	public void zoom(double delta, int x, int y) {
@@ -170,8 +171,6 @@ public class Chart <X extends Number, Y extends Number> extends JPanel{
 			for(Entry<X, Y> datapoint : marker.entrySet()){
 				data.setLocation(datapoint.getKey().doubleValue(), datapoint.getValue().doubleValue());
 				currentSpace.spaceToPixel(data, pixel);
-				int x = (int) pixel.getX();
-				int y = (int) pixel.getY();
 				MarkersDrawer.getMarker(i).draw(g2d, pixel, MARKER_SIZE);
 			}
 		}

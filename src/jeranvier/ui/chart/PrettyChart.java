@@ -1,6 +1,8 @@
 package jeranvier.ui.chart;
 
 import java.awt.Color;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 
 import javax.swing.GroupLayout;
 import javax.swing.JPanel;
@@ -19,8 +21,27 @@ public class PrettyChart<X extends Number, Y extends Number> extends JPanel{
 		
 		this.setBackground(Color.WHITE);
 
-		JPanel cross = new JPanel();
-		cross.setBackground(Color.WHITE);
+		Cross cross = new Cross();
+		cross.addMouseListener(new MouseListener() {
+			
+			@Override
+			public void mouseReleased(MouseEvent e) {				
+			}
+			@Override
+			public void mousePressed(MouseEvent e) {				
+			}
+			@Override
+			public void mouseExited(MouseEvent e) {				
+			}
+			@Override
+			public void mouseEntered(MouseEvent e) {				
+			}
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				chart.resetView();
+				invalidate();
+			}
+		});
 		Axis vertical = new VerticalAxis(chart.verticalAxisFormater());
 		Axis horizontal = new HorizontalAxis(chart.horizontalAxisFormater());
 		chart.addChartListener(vertical);
