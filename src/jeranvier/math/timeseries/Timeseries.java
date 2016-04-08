@@ -68,6 +68,36 @@ public class Timeseries extends TreeMap<Long,Double> implements Serializable{
 		 return tsb.build();
 	}
 	
+	public Timeseries cumulativeplice(Timeseries that){
+		 Builder tsb = new Timeseries.Builder();
+		 for(Map.Entry<Long, Double> element : this.entrySet()){
+			 tsb.put(element.getKey(), element.getValue());
+		 }
+		 for(Map.Entry<Long, Double> element : that.entrySet()){
+			 if(this.containsKey(element.getKey())){
+				 tsb.put(element.getKey(), this.get(element.getKey())+element.getValue());
+			 }else{				 
+				 tsb.put(element.getKey(), element.getValue());
+			 }
+		 }
+		 return tsb.build();
+	}
+	
+	public Timeseries averageSplice(Timeseries that){
+		 Builder tsb = new Timeseries.Builder();
+		 for(Map.Entry<Long, Double> element : this.entrySet()){
+			 tsb.put(element.getKey(), element.getValue());
+		 }
+		 for(Map.Entry<Long, Double> element : that.entrySet()){
+			 if(this.containsKey(element.getKey())){
+				 tsb.put(element.getKey(), (this.get(element.getKey())+element.getValue())/2);
+			 }else{				 
+				 tsb.put(element.getKey(), element.getValue());
+			 }
+		 }
+		 return tsb.build();
+	}
+	
 	public Timeseries substituteAll(double[] values){
 		if(this.size() != values.length){
 			throw new IllegalArgumentException("operation on timeseries of different sizes (" +this.size() +"=!"+values.length+")");
