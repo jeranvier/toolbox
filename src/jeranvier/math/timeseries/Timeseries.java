@@ -7,6 +7,7 @@ import java.io.Serializable;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Queue;
 import java.util.SortedMap;
 import java.util.TreeMap;
@@ -226,7 +227,7 @@ public class Timeseries extends TreeMap<Long,Double> implements Serializable{
 		return tsb.build();
 	}
 	
-	private double get(long key, Resampler<Long, Double> resampler) {
+	public double get(long key, Resampler<Long, Double> resampler) {
 		if(this.containsKey(key)){
 			return get(key);
 		}
@@ -299,6 +300,17 @@ public class Timeseries extends TreeMap<Long,Double> implements Serializable{
 				});
 	}
 
+	public double getNearest(long t){
+			return this.get(t, (f, k ,c)->{
+						if(Math.abs(f.getKey()-k) < Math.abs(c.getKey()-k)){
+							return f.getValue();
+						}
+						else{
+							return c.getValue();	
+						}
+					});
+	}
+	
 	public Vector vector() {
 		Vector.Builder vb = new Vector.Builder(this.size());
 		int i=1;
@@ -341,6 +353,26 @@ public class Timeseries extends TreeMap<Long,Double> implements Serializable{
 			throw new IllegalArgumentException("operation with incompatible sizes. Some values could not be copied.");
 		}
 		return tsb.build();
+	}
+
+	public Entry<Long, Double> max() {
+		Map.Entry<Long, Double> max = this.firstEntry();
+		for(Map.Entry<Long, Double> entry : this.entrySet()){
+			if(entry.getValue()> max.getValue()){
+				max = entry;
+			}
+		}
+		return max;
+	}
+	
+	public Entry<Long, Double> min() {
+		Map.Entry<Long, Double> min = this.firstEntry();
+		for(Map.Entry<Long, Double> entry : this.entrySet()){
+			if(entry.getValue()< min.getValue()){
+				min = entry;
+			}
+		}
+		return min;
 	}
 	
 }
