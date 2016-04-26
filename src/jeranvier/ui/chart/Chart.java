@@ -173,6 +173,7 @@ public class Chart <X extends Number, Y extends Number> extends JPanel{
 				currentSpace.spaceToPixel(data, pixel);
 				MarkersDrawer.getMarker(i).draw(g2d, pixel, MARKER_SIZE);
 			}
+			i++;
 		}
 	}
 
