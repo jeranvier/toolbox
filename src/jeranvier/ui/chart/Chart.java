@@ -22,6 +22,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.TreeMap;
 
 import javax.swing.JPanel;
 
@@ -43,8 +44,7 @@ public class Chart <X extends Number, Y extends Number> extends JPanel{
 	
 	//DATA
 	protected Map<String, Map<X, Y>> markers = new HashMap<>();
-	protected Map<Integer, Map<X, Y>> data = new HashMap<>();
-	protected Map<String, Integer> labels = new HashMap<>();
+	protected Map<String, Map<X, Y>> data = new HashMap<>();
 	protected Entry<X, Y> highlightedDataPoint;
 	
 	//SPACES
@@ -73,26 +73,24 @@ public class Chart <X extends Number, Y extends Number> extends JPanel{
 	
 	public Chart(Map<String, Integer> labels, Map<Integer,Map<X, Y>> data){
 		this();
-		this.labels = new HashMap<>(labels);
-		this.data = data;
+		this.data = new TreeMap<>();
+		for(Entry<String,Integer> label: labels.entrySet()){
+			this.data.put(label.getKey(), data.get(label.getValue()));
+		}
 		computeBoundaries();
 		resetView(); 
 	}
 
 	public Chart(String label, Map<X, Y> ts) {
 		this();
-		this.labels = new HashMap<>();
-		labels.put(label, 0);
-		
-		this.data = new HashMap<>();
-		this.data.put(0, ts);
+		this.data = new TreeMap<>();
+		this.data.put(label, ts);
 		computeBoundaries();
 		resetView(); 
 	}
 	
 	public void addData(String label, Map<X, Y> data){
-		this.labels.put(label, this.data.size());
-		this.data.put(this.data.size(), data);
+		this.data.put(label, data);
 		computeBoundaries();
 		resetView();
 	}
@@ -181,14 +179,14 @@ public class Chart <X extends Number, Y extends Number> extends JPanel{
 	protected void drawSeries(Graphics2D g2d) {
 		
 		int i = 0;
-		for(Entry<String, Integer> label : this.labels.entrySet()){
+		for(Map<X, Y> series:data.values()){
 			g2d.setColor(Chart.colors[i%Chart.colors.length]);
 			Point2D previousPixel = new Point2D.Double(0, 0);
 			boolean previousVisible = true;
 			Point2D data = new Point2D.Double();
 			Point2D pixel = new Point2D.Double();
 			boolean firstPoint = true;
-			for(Entry<X, Y> datapoint : this.data.get(label.getValue()).entrySet()){
+			for(Entry<X, Y> datapoint : series.entrySet()){
 				data.setLocation(datapoint.getKey().doubleValue(), datapoint.getValue().doubleValue());
 				currentSpace.spaceToPixel(data, pixel);
 				int x = (int) pixel.getX();
