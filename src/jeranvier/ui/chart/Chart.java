@@ -11,8 +11,6 @@ import java.awt.datatransfer.Clipboard;
 import java.awt.datatransfer.ClipboardOwner;
 import java.awt.datatransfer.StringSelection;
 import java.awt.datatransfer.Transferable;
-import java.awt.event.ComponentEvent;
-import java.awt.event.ComponentListener;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.NoninvertibleTransformException;
 import java.awt.geom.Point2D;
@@ -30,21 +28,21 @@ import javax.swing.JPanel;
 public class Chart <X extends Number, Y extends Number> extends JPanel{
 	//CONSTANTS
 	protected static final double DATA_SPACE_MARGINS = 0.05; //in percentage
-	protected static final int MARKER_SIZE = 4; //in px
+	public static final int MARKER_SIZE = 4; //in px
 	protected static final int MIN_DISTANCE_BETWEEN_POINTS = 1; //in px
 	protected static final Stroke STROKE = new BasicStroke(2);
 	protected static final Color[] colors = new Color[]{
 		Color.decode("#7B1FA2"),
 		Color.decode("#FFAB00"),
-		Color.decode("#4A148C"),
 		Color.decode("#880E4F"),
+		Color.decode("#4A148C"),
 		Color.decode("#1B5E20"),
 		Color.decode("#006064")};
 
 	
 	//DATA
-	protected Map<String, Map<X, Y>> markers = new HashMap<>();
-	protected Map<String, Map<X, Y>> data = new HashMap<>();
+	protected Map<String, Map<X, Y>> markers;
+	protected Map<String, Map<X, Y>> data;
 	protected Entry<X, Y> highlightedDataPoint;
 	
 	//SPACES
@@ -57,10 +55,12 @@ public class Chart <X extends Number, Y extends Number> extends JPanel{
 
 	//SYSMTE INTERACTION
 	private List<ChartListener> chartListeners;
+	private List<ChartDataListener<X,Y>> chartDataListeners;
 	protected static final ClipboardHandler clipboardHandler = new ClipboardHandler();
 	
 	public Chart(){
 		this.chartListeners = new LinkedList<>();
+		this.chartDataListeners = new LinkedList<>();
 		MouseController mouseController = new MouseController(this);
 		this.addMouseMotionListener(mouseController);
 		this.addMouseWheelListener(mouseController);
@@ -75,28 +75,26 @@ public class Chart <X extends Number, Y extends Number> extends JPanel{
 		this();
 		this.data = new TreeMap<>();
 		for(Entry<String,Integer> label: labels.entrySet()){
-			this.data.put(label.getKey(), data.get(label.getValue()));
-		}
-		computeBoundaries();
-		resetView(); 
+			addData(label.getKey(), data.get(label.getValue()));
+		} 
 	}
 
 	public Chart(String label, Map<X, Y> ts) {
 		this();
 		this.data = new TreeMap<>();
-		this.data.put(label, ts);
-		computeBoundaries();
-		resetView(); 
+		this.addData(label, ts);
 	}
 	
 	public void addData(String label, Map<X, Y> data){
 		this.data.put(label, data);
 		computeBoundaries();
+		this.notifyChartDataListeners();
 		resetView();
 	}
 	
 	public void addMarker(String label, Map<X, Y> marker){
 		this.markers.put(label, marker);
+		this.notifyChartDataListeners();
 	}
 
 
@@ -136,9 +134,19 @@ public class Chart <X extends Number, Y extends Number> extends JPanel{
 		this.chartListeners.add(listener);
 	}
 	
+	public void addChartDataListener(ChartDataListener<X,Y> listener){
+		this.chartDataListeners.add(listener);
+	}
+	
 	public void notifyChartListeners(){
 		for(ChartListener cl : chartListeners){
 			cl.notify(currentSpace);
+		}
+	}
+	
+	public void notifyChartDataListeners(){
+		for(ChartDataListener<X,Y> cdl : chartDataListeners){
+			cdl.notify(this.markers, this.data);
 		}
 	}
 
@@ -163,7 +171,7 @@ public class Chart <X extends Number, Y extends Number> extends JPanel{
 	private void drawMarkers(Graphics2D g2d) {
 		int i = this.data.size();
 		for(Map<X, Y> marker : this.markers.values()){
-			g2d.setColor(Chart.colors[i%Chart.colors.length]);
+			g2d.setColor(getColor(i));
 			Point2D data = new Point2D.Double();
 			Point2D pixel = new Point2D.Double();
 			for(Entry<X, Y> datapoint : marker.entrySet()){
@@ -175,12 +183,11 @@ public class Chart <X extends Number, Y extends Number> extends JPanel{
 		}
 	}
 
-
 	protected void drawSeries(Graphics2D g2d) {
 		
 		int i = 0;
 		for(Map<X, Y> series:data.values()){
-			g2d.setColor(Chart.colors[i%Chart.colors.length]);
+			g2d.setColor(getColor(i));
 			Point2D previousPixel = new Point2D.Double(0, 0);
 			boolean previousVisible = true;
 			Point2D data = new Point2D.Double();
@@ -286,6 +293,14 @@ public class Chart <X extends Number, Y extends Number> extends JPanel{
 			highlightedDataPoint = null;
 		}
 		this.repaint();
+	}
+	
+	public static Color getColor(int i) {
+		return Chart.colors[i%Chart.colors.length];
+	}
+	
+	public static Stroke getStroke(int i) {
+		return Chart.STROKE;
 	}
 	
 	private void computeBoundaries() {

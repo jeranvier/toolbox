@@ -43,8 +43,25 @@ public class ChartFrame<X extends Number, Y extends Number> extends JFrame{
 			tsb.put((long) i, v);
 		}
 		tscb.putTimeseries("c", tsb.build());
+		
+		tsb = new Timeseries.Builder();
+		for(double i = -NUMBER_OF_POINTS/20; i <NUMBER_OF_POINTS/20; i++){
+			double v = 0.0;
+			tsb.put((long) i*10, v);
+		}
+		Timeseries marker = tsb.build();
+		
 
 		Chart<Long, Double> chart = new TimeChart(tscb.build());
+		chart.addMarker("marker1", marker);
+		chart.addMarker("marker2", marker);
+		chart.addMarker("marker3", marker);
+		chart.addMarker("marker4", marker);
+		chart.addMarker("marker5", marker);
+		chart.addMarker("marker6", marker);
+		chart.addMarker("marker7", marker);
+		chart.addMarker("marker8", marker);
+		chart.addMarker("marker9", marker);
 		PrettyChart<Long, Double> prettyChart = new PrettyChart<Long, Double>(chart);
 		ChartFrame<Long, Double> cf = new ChartFrame<>(prettyChart);
 		cf.setLocation(200, 200);
