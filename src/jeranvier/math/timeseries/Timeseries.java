@@ -16,6 +16,7 @@ import java.util.concurrent.ArrayBlockingQueue;
 import jeranvier.io.CSVHandler;
 import jeranvier.io.CSVStreamingHandler;
 import jeranvier.io.CSVStreamingHandler.Record;
+import jeranvier.math.dsp.filters.ButterworthFilter;
 import jeranvier.math.linearAlgebra.Matrix;
 import jeranvier.math.linearAlgebra.Vector;
 import jeranvier.math.stats.SimpleStats;
@@ -143,7 +144,6 @@ public class Timeseries extends TreeMap<Long,Double> implements Serializable{
 		Queue<Double> window = new ArrayBlockingQueue<Double>(windowLength);
 		Queue<Long> times = new ArrayBlockingQueue<Long>(radius +1);
 		for(Map.Entry<Long, Double> entry : this.entrySet()){
-			
 			times.add(entry.getKey());
 				
 			window.add(entry.getValue());
@@ -157,7 +157,6 @@ public class Timeseries extends TreeMap<Long,Double> implements Serializable{
 				times.poll();
 			}
 		}
-		
 		return tsb.build();
 	}
 	
@@ -189,6 +188,26 @@ public class Timeseries extends TreeMap<Long,Double> implements Serializable{
 		Builder tsb = new Timeseries.Builder();		
 		for(Map.Entry<Long, Double> entry : this.entrySet()){
 			tsb.put(entry.getKey(), entry.getValue() * value);
+		}
+		return tsb.build();
+	}
+	
+	public Timeseries rescale(){
+		double min = Double.MAX_VALUE;
+		double max = Double.MIN_VALUE;
+		for(Map.Entry<Long, Double> entry : this.entrySet()){
+			if(entry.getValue()>max){
+				max = entry.getValue();
+			}
+			if(entry.getValue()<min){
+				min = entry.getValue();
+			}
+		}
+		
+		double diff = max-min;
+		Builder tsb = new Timeseries.Builder();		
+		for(Map.Entry<Long, Double> entry : this.entrySet()){
+			tsb.put(entry.getKey(), (entry.getValue()-min) /diff);
 		}
 		return tsb.build();
 	}
@@ -373,6 +392,10 @@ public class Timeseries extends TreeMap<Long,Double> implements Serializable{
 			}
 		}
 		return min;
+	}
+
+	public Timeseries filter(ButterworthFilter bw) {
+		return this.substituteAll(bw.filter(this.vector()));
 	}
 	
 }
