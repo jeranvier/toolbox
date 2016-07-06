@@ -28,40 +28,32 @@ public class ChartFrame<X extends Number, Y extends Number> extends JFrame{
 			double v = Math.exp(-i*i/(2*300*300))/(300*Math.sqrt(2*Math.PI));
 			tsb.put((long) i, v);
 		}
-		tscb.putTimeseries("a", tsb.build());
+		tscb.putTimeseries("normal 1", tsb.build());
 		
 		tsb = new Timeseries.Builder();
 		for(double i = -NUMBER_OF_POINTS/2; i <NUMBER_OF_POINTS/2; i++){
 			double v = Math.exp(-i*i/(2*200*200))/(200*Math.sqrt(2*Math.PI));
 			tsb.put((long) i, v);
 		}
-		tscb.putTimeseries("b", tsb.build());
+		tscb.putTimeseries("normal 2", tsb.build());
 		
 		tsb = new Timeseries.Builder();
 		for(double i = -NUMBER_OF_POINTS/2; i <NUMBER_OF_POINTS/2; i++){
 			double v = Math.cos(i/300)/1000;
 			tsb.put((long) i, v);
 		}
-		tscb.putTimeseries("c", tsb.build());
+		tscb.putTimeseries("cos(x)", tsb.build());
 		
 		tsb = new Timeseries.Builder();
 		for(double i = -NUMBER_OF_POINTS/20; i <NUMBER_OF_POINTS/20; i++){
-			double v = 0.0;
-			tsb.put((long) i*10, v);
+			double v = Math.tanh(i/300)/1000;
+			tsb.put((long) i, v);
 		}
 		Timeseries marker = tsb.build();
 		
 
 		Chart<Long, Double> chart = new TimeChart(tscb.build());
-		chart.addMarker("marker1", marker);
-		chart.addMarker("marker2", marker);
-		chart.addMarker("marker3", marker);
-		chart.addMarker("marker4", marker);
-		chart.addMarker("marker5", marker);
-		chart.addMarker("marker6", marker);
-		chart.addMarker("marker7", marker);
-		chart.addMarker("marker8", marker);
-		chart.addMarker("marker9", marker);
+		chart.addMarker("tanh", marker);
 		PrettyChart<Long, Double> prettyChart = new PrettyChart<Long, Double>(chart);
 		ChartFrame<Long, Double> cf = new ChartFrame<>(prettyChart);
 		cf.setLocation(200, 200);
