@@ -25,6 +25,10 @@ public class ButterworthFilter {
 	
 	
 	public Vector filter(Vector signal){
+		int originalSize = signal.size();
+		if((originalSize & (originalSize-1))!=0){
+			signal = Fourier.Util.potPadding(signal); //we take the next power of 2 size
+		}
 		Vector fft = Fourier.dft(signal);
 		int n = signal.size();
 		double binWidth = this.sampleRate / n; // Hz
@@ -39,7 +43,11 @@ public class ButterworthFilter {
 		}
 		Vector filtered = filteredBuilder.build();
 
-		return Fourier.ift(filtered);
+		if(originalSize != signal.size()){
+			return Fourier.ift(filtered).getRange(1, originalSize);			
+		}else{
+			return Fourier.ift(filtered);
+		}
 	}
 }
 
