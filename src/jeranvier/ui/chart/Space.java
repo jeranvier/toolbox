@@ -32,6 +32,14 @@ public class Space {
 	public Space(Space s) {
 		this(s.dataMin, s.dataMax, s.pixelDim);
 	}
+	
+	public Point2D getDataMin(){
+		return this.dataMin;
+	}
+	
+	public Point2D getDataMax(){
+		return this.dataMax;
+	}
 
 	private void updateViewField() {
 		Point2D min = new Point2D.Double();

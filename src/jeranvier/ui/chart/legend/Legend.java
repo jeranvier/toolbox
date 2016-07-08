@@ -5,6 +5,7 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.SortedMap;
 
 import javax.swing.BorderFactory;
 import javax.swing.JPanel;
@@ -26,7 +27,7 @@ public class Legend<X,Y> extends JPanel implements ChartDataListener<X,Y>{
 	}
 
 	@Override
-	public void notify(Map<String, Map<X,Y>> markers, Map<String, Map<X,Y>> data) {
+	public void notify(Map<String, SortedMap<X,Y>> markers, Map<String, SortedMap<X,Y>> data) {
 		this.removeAll();
 		int i = 0;
 		for(String dataString : data.keySet()){

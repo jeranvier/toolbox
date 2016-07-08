@@ -20,6 +20,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.SortedMap;
 import java.util.TreeMap;
 
 import javax.swing.JPanel;
@@ -41,8 +42,8 @@ public class Chart <X extends Number, Y extends Number> extends JPanel{
 
 	
 	//DATA
-	protected Map<String, Map<X, Y>> markers;
-	protected Map<String, Map<X, Y>> data;
+	protected Map<String, SortedMap<X, Y>> markers;
+	protected Map<String, SortedMap<X, Y>> data;
 	protected Entry<X, Y> highlightedDataPoint;
 	
 	//SPACES
@@ -71,7 +72,7 @@ public class Chart <X extends Number, Y extends Number> extends JPanel{
 	}
 	
 	
-	public Chart(Map<String, Integer> labels, Map<Integer,Map<X, Y>> data){
+	public Chart(Map<String, Integer> labels, Map<Integer,SortedMap<X, Y>> data){
 		this();
 		this.data = new TreeMap<>();
 		for(Entry<String,Integer> label: labels.entrySet()){
@@ -79,20 +80,20 @@ public class Chart <X extends Number, Y extends Number> extends JPanel{
 		} 
 	}
 
-	public Chart(String label, Map<X, Y> ts) {
+	public Chart(String label, SortedMap<X, Y> ts) {
 		this();
 		this.data = new TreeMap<>();
 		this.addData(label, ts);
 	}
 	
-	public void addData(String label, Map<X, Y> data){
+	public void addData(String label, SortedMap<X, Y> data){
 		this.data.put(label, data);
 		computeBoundaries();
 		this.notifyChartDataListeners();
 		resetView();
 	}
 	
-	public void addMarker(String label, Map<X, Y> marker){
+	public void addMarker(String label, SortedMap<X, Y> marker){
 		this.markers.put(label, marker);
 		this.notifyChartDataListeners();
 	}
@@ -168,7 +169,7 @@ public class Chart <X extends Number, Y extends Number> extends JPanel{
 		drawMarkers(g2d);	
 	}
 	
-	private void drawMarkers(Graphics2D g2d) {
+	protected void drawMarkers(Graphics2D g2d) {
 		int i = this.data.size();
 		for(Map<X, Y> marker : this.markers.values()){
 			g2d.setColor(getColor(i));
@@ -186,7 +187,7 @@ public class Chart <X extends Number, Y extends Number> extends JPanel{
 	protected void drawSeries(Graphics2D g2d) {
 		
 		int i = 0;
-		for(Map<X, Y> series:data.values()){
+		for(SortedMap<X, Y> series:data.values()){
 			g2d.setColor(getColor(i));
 			Point2D previousPixel = new Point2D.Double(0, 0);
 			boolean previousVisible = true;
@@ -236,7 +237,7 @@ public class Chart <X extends Number, Y extends Number> extends JPanel{
 	}
 
 
-	private void displayHighlightedPoint(Graphics2D g2d, X x, Y y) {
+	protected void displayHighlightedPoint(Graphics2D g2d, X x, Y y) {
 		g2d.scale(1, -1);
 		g2d.translate(0, -this.getHeight());
 		g2d.drawString("x: "+this.horizontalAxisFormater().format(x), this.getWidth()-200, 20);
