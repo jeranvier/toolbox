@@ -31,8 +31,8 @@ public class TimeseriesCollection implements Serializable{
 		return sb.toString();
 	}
 	
-	public SortedMap<Integer,Map<Long, Double>> getTimeSeries(){
-		SortedMap<Integer,Map<Long, Double>> result = new TreeMap<Integer,Map<Long, Double>>();
+	public Map<Integer,SortedMap<Long, Double>> getTimeSeries(){
+		Map<Integer,SortedMap<Long, Double>> result = new TreeMap<Integer,SortedMap<Long, Double>>();
 		for(Integer labelId:labels.values()){
 			result.put(labelId, new TreeMap<>());
 		}

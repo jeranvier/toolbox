@@ -281,6 +281,10 @@ public class Timeseries extends TreeMap<Long,Double> implements Serializable{
 			data.put(key, value);
 		}
 		
+		public void remove(Long key) {
+			data.remove(key);
+		}
+		
 		public static Timeseries zeros(long start, long stop, long step){
 			Builder z = new Builder();
 			for(long i=start;i<stop; i+=step){
@@ -396,6 +400,27 @@ public class Timeseries extends TreeMap<Long,Double> implements Serializable{
 
 	public Timeseries filter(ButterworthFilter bw) {
 		return this.substituteAll(bw.filter(this.vector()));
+	}
+
+	public Timeseries computeMaximums() {
+		Timeseries.Builder tsb = new Timeseries.Builder();
+		double previousValue = Double.NEGATIVE_INFINITY;
+		long previousTime = 0l;
+		double previousSlop=1.0;
+		for(Entry<Long, Double> entry : this.entrySet()){
+			double slop = Math.signum(entry.getValue()-previousValue);
+			if(slop<0 && previousSlop>0){ // we found a max (the previous value)
+				tsb.put(previousTime, previousValue);
+			}
+			
+			if(slop !=0){
+				previousSlop = slop;
+				previousValue = entry.getValue();
+				previousTime = entry.getKey();
+			}
+		}
+		
+		return tsb.build();
 	}
 	
 }
