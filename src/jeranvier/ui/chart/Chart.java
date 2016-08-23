@@ -33,12 +33,14 @@ public class Chart <X extends Number, Y extends Number> extends JPanel{
 	protected static final int MIN_DISTANCE_BETWEEN_POINTS = 1; //in px
 	protected static final Stroke STROKE = new BasicStroke(2);
 	protected static final Color[] colors = new Color[]{
-		Color.decode("#7B1FA2"),
-		Color.decode("#FFAB00"),
-		Color.decode("#880E4F"),
-		Color.decode("#4A148C"),
-		Color.decode("#1B5E20"),
-		Color.decode("#006064")};
+		Color.decode("#F44336"),
+		Color.decode("#9C27B0"),
+		Color.decode("#4CAF50"),
+		Color.decode("#FFEB3B"),
+		Color.decode("#9E9E9E"),
+		Color.decode("#E91E63"),
+		Color.decode("#2196F3"),
+		Color.decode("#CDDC39")};
 
 	
 	//DATA

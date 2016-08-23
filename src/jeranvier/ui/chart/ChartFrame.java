@@ -2,6 +2,7 @@ package jeranvier.ui.chart;
 
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.Toolkit;
 
 import javax.swing.JFrame;
 
@@ -14,7 +15,8 @@ public class ChartFrame<X extends Number, Y extends Number> extends JFrame{
 	public ChartFrame(PrettyChart<X, Y> prettyChart){
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		this.getContentPane().setBackground(Color.WHITE);
-		this.setPreferredSize(new Dimension(800, 500));
+		Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+		this.setPreferredSize(screenSize);
 		KeyboardController keyboardController = new KeyboardController(prettyChart.getChart());
 		this.addKeyListener(keyboardController);
 		this.getContentPane().add(prettyChart);
