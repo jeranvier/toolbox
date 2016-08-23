@@ -12,6 +12,9 @@ import java.util.Queue;
 import java.util.SortedMap;
 import java.util.TreeMap;
 import java.util.concurrent.ArrayBlockingQueue;
+import java.util.function.Function;
+
+import javax.naming.OperationNotSupportedException;
 
 import jeranvier.io.CSVHandler;
 import jeranvier.io.CSVStreamingHandler;
@@ -26,7 +29,7 @@ public class Timeseries extends TreeMap<Long,Double> implements Serializable{
 
 	private static final long serialVersionUID = -4556555657603027141L;
 
-	public static enum AVERAGE_TYPE{CENTERED, DELAYED, AHEAD};
+	public static enum SLING_WINDOW_TYPE{CENTERED, DELAYED, AHEAD};
 	
 	public Timeseries(Map<Long,Double> data){
 		super(data);
@@ -138,25 +141,47 @@ public class Timeseries extends TreeMap<Long,Double> implements Serializable{
 		 return tsb.build();
 	}
 	
-	public Timeseries movingAverage(int radius, AVERAGE_TYPE type){
-		int windowLength = 2 * radius + 1;
-		Builder tsb = new Timeseries.Builder();
-		Queue<Double> window = new ArrayBlockingQueue<Double>(windowLength);
-		Queue<Long> times = new ArrayBlockingQueue<Long>(radius +1);
-		for(Map.Entry<Long, Double> entry : this.entrySet()){
-			times.add(entry.getKey());
-				
-			window.add(entry.getValue());
-			
-			if(window.size() == windowLength){
-				tsb.put(times.poll(), SimpleStats.mean((Collection<? extends Number>) window));
-				window.poll();
+	//windowLength is in milliseconds
+	public Timeseries slidingWindow(long windowLength, SLING_WINDOW_TYPE type, Function<SortedMap<Long, Double>, Double> function) throws OperationNotSupportedException{
+		Timeseries.Builder tsb = new Timeseries.Builder();
+		
+		long start;
+		long end;
+		long key;
+		switch(type){
+		case CENTERED:
+			long half = windowLength/2;
+			start = this.firstKey() + half;
+			end = this.lastKey()-half;
+			for(Map.Entry<Long, Double> entry : this.entrySet()){
+				key = entry.getKey();
+				if(key >= start && key <= end){
+					tsb.put(key, function.apply(this.subMap(key-half, key+half)));
+				}
 			}
-			
-			if(times.size() == radius + 1){
-				times.poll();
+			break;
+		case AHEAD:
+			start = this.firstKey();
+			end = this.lastKey()-windowLength;
+			for(Map.Entry<Long, Double> entry : this.entrySet()){
+				key = entry.getKey();
+				if(key >= start && key <= end){
+					tsb.put(key, function.apply(this.subMap(key, key+windowLength)));
+				}
 			}
+			break;
+		case DELAYED:
+			start = this.firstKey()+windowLength;
+			end = this.lastKey();
+			for(Map.Entry<Long, Double> entry : this.entrySet()){
+				key = entry.getKey();
+				if(key >= start && key <= end){
+					tsb.put(key, function.apply(this.subMap(key-windowLength, key)));
+				}
+			}
+			break;
 		}
+			
 		return tsb.build();
 	}
 	
