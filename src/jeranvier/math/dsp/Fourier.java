@@ -30,7 +30,6 @@ public class Fourier {
 				power = power << 1;
 			}
 			
-			System.out.println("was: "+in.size()+", and is now: "+power);
 			Vector.Builder vb = new Vector.Builder(power);
 
 			int i = 1;
