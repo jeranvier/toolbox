@@ -29,7 +29,7 @@ public class Timeseries extends TreeMap<Long,Double> implements Serializable{
 
 	private static final long serialVersionUID = -4556555657603027141L;
 
-	public static enum SLING_WINDOW_TYPE{CENTERED, DELAYED, AHEAD};
+	public static enum SLIDING_WINDOW_TYPE{CENTERED, DELAYED, AHEAD};
 	
 	public Timeseries(Map<Long,Double> data){
 		super(data);
@@ -142,7 +142,7 @@ public class Timeseries extends TreeMap<Long,Double> implements Serializable{
 	}
 	
 	//windowLength is in milliseconds
-	public Timeseries slidingWindow(long windowLength, SLING_WINDOW_TYPE type, Function<SortedMap<Long, Double>, Double> function) throws OperationNotSupportedException{
+	public Timeseries slidingWindow(long windowLength, SLIDING_WINDOW_TYPE type, Function<SortedMap<Long, Double>, Double> function) throws OperationNotSupportedException{
 		Timeseries.Builder tsb = new Timeseries.Builder();
 		
 		long start;
