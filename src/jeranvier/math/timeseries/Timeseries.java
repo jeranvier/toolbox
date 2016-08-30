@@ -142,7 +142,7 @@ public class Timeseries extends TreeMap<Long,Double> implements Serializable{
 	}
 	
 	//windowLength is in milliseconds
-	public Timeseries slidingWindow(long windowLength, SLIDING_WINDOW_TYPE type, Function<SortedMap<Long, Double>, Double> function) throws OperationNotSupportedException{
+	public Timeseries slidingWindow(long windowLength, SLIDING_WINDOW_TYPE type, Function<SortedMap<Long, Double>, Double> function){
 		Timeseries.Builder tsb = new Timeseries.Builder();
 		
 		long start;
