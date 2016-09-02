@@ -56,12 +56,8 @@ public class ChartFrame<X extends Number, Y extends Number> extends JFrame{
 
 		Chart<Long, Double> chart = new TimeChart(tscb.build());
 		chart.addMarker("tanh", marker);
-		PrettyChart<Long, Double> prettyChart = new PrettyChart<Long, Double>(chart);
-		ChartFrame<Long, Double> cf = new ChartFrame<>(prettyChart);
-		cf.setLocation(200, 200);
-		cf.pack();
-		cf.revalidate();
-		cf.setVisible(true);
+		ChartFrame<Long, Double> cf = new ChartFrame<>(new PrettyChart<>(chart));
+		cf.display();
 	}
 
 	public void display() {

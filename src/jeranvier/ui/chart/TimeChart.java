@@ -5,6 +5,7 @@ import java.awt.geom.Point2D;
 import java.text.Format;
 import java.text.SimpleDateFormat;
 import java.util.Map;
+import java.util.Set;
 import java.util.SortedMap;
 import java.util.Map.Entry;
 
@@ -44,8 +45,8 @@ public class TimeChart extends Chart<Long, Double>{
 			Point2D data = new Point2D.Double();
 			Point2D pixel = new Point2D.Double();
 			boolean firstPoint = true;
-			long time  = System.currentTimeMillis();
-			for(Entry<Long, Double> datapoint : series.subMap((long)(currentSpace.getFieldOfView().getMinX()), (long)(currentSpace.getFieldOfView().getMaxX())).entrySet()){
+			Set<Entry<Long, Double>> submap = series.subMap((long)(currentSpace.getFieldOfView().getMinX()), (long)(currentSpace.getFieldOfView().getMaxX())).entrySet();
+			for(Entry<Long, Double> datapoint : submap){
 				data.setLocation(datapoint.getKey().doubleValue(), datapoint.getValue().doubleValue());
 				currentSpace.spaceToPixel(data, pixel);
 				int x = (int) pixel.getX();
