@@ -162,7 +162,7 @@ public class Chart <X extends Number, Y extends Number> extends JPanel{
 		AffineTransform tx = AffineTransform.getScaleInstance(1, -1);
 		tx.translate(0, -this.getHeight());
 		g2d.transform(tx);	
-		g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_OFF);
+		g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 		
 		g2d.clearRect(0, 0, this.getWidth(), this.getHeight());
 		g2d.setStroke(Chart.STROKE);

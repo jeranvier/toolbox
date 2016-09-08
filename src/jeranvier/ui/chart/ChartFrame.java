@@ -4,6 +4,7 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Toolkit;
 
+import javax.swing.JColorChooser;
 import javax.swing.JFrame;
 
 import jeranvier.math.timeseries.Timeseries;
@@ -23,7 +24,7 @@ public class ChartFrame<X extends Number, Y extends Number> extends JFrame{
 	}
 	
 	public static void main(String args[]){
-		int NUMBER_OF_POINTS = 6000; //per timeseries
+		int NUMBER_OF_POINTS = 600; //per timeseries
 		TimeseriesCollection.Builder tscb = new TimeseriesCollection.Builder();
 		Timeseries.Builder tsb = new Timeseries.Builder();
 		for(double i = -NUMBER_OF_POINTS/2; i <NUMBER_OF_POINTS/2; i++){

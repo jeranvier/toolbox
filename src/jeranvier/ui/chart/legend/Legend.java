@@ -8,6 +8,7 @@ import java.util.Map;
 import java.util.SortedMap;
 
 import javax.swing.BorderFactory;
+import javax.swing.JColorChooser;
 import javax.swing.JPanel;
 import javax.swing.border.BevelBorder;
 
