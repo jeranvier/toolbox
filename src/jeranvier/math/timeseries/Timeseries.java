@@ -41,6 +41,7 @@ public class Timeseries extends TreeMap<Long,Double> implements Serializable{
 		for(Map.Entry<Long, Double> entry : this.entrySet()){
 			sb.append(entry.getKey()+"\t"+entry.getValue()+"\n");
 		}
+		sb.deleteCharAt(sb.length()-1);
 		return sb.toString();
 	}
 	
@@ -373,6 +374,17 @@ public class Timeseries extends TreeMap<Long,Double> implements Serializable{
 		Timeseries.Builder b = new Timeseries.Builder();
 		CSVStreamingHandler csh = new CSVStreamingHandler(CSVHandler.TAB, CSVHandler.EMPTY, false, file.getAbsolutePath());
 		
+		while(csh.hasNext()){
+			Record next = csh.next();
+			b.put(next.getLong(0), next.getDouble(1));
+		}
+		return b.build();
+	}
+	
+	public static Timeseries load(File file, boolean headerAvailable) throws IOException{
+		Timeseries.Builder b = new Timeseries.Builder();
+		CSVStreamingHandler csh = new CSVStreamingHandler(CSVHandler.TAB, CSVHandler.EMPTY, headerAvailable, file.getAbsolutePath());
+		csh.getRecords();
 		while(csh.hasNext()){
 			Record next = csh.next();
 			b.put(next.getLong(0), next.getDouble(1));
