@@ -272,6 +272,16 @@ public class Timeseries extends TreeMap<Long,Double> implements Serializable{
 		return tsb.build();
 	}
 	
+	public double mean(){
+	double mean = 0;
+	int t = 1;
+	for (double x : this.values()) {
+		mean += (x - mean) / t;
+		++t;
+	}
+	return mean;
+	}
+	
 	public double get(long key, Resampler<Long, Double> resampler) {
 		if(this.containsKey(key)){
 			return get(key);
