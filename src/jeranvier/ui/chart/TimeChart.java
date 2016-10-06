@@ -38,14 +38,14 @@ public class TimeChart extends Chart<Long, Double>{
 	@Override
 	protected void drawSeries(Graphics2D g2d) {
 		int i = 0;
-		for(SortedMap<Long, Double> series:this.data.values()){
+		for(Entry<String, SortedMap<Long, Double>> series:this.data.entrySet()){
 			g2d.setColor(getColor(i));
 			Point2D previousPixel = new Point2D.Double(0, 0);
 			boolean previousVisible = true;
 			Point2D data = new Point2D.Double();
 			Point2D pixel = new Point2D.Double();
 			boolean firstPoint = true;
-			Set<Entry<Long, Double>> submap = series.subMap((long)(currentSpace.getFieldOfView().getMinX()), (long)(currentSpace.getFieldOfView().getMaxX())).entrySet();
+			Set<Entry<Long, Double>> submap = series.getValue().subMap((long)(currentSpace.getFieldOfView().getMinX()), (long)(currentSpace.getFieldOfView().getMaxX())).entrySet();
 			for(Entry<Long, Double> datapoint : submap){
 				data.setLocation(datapoint.getKey().doubleValue(), datapoint.getValue().doubleValue());
 				currentSpace.spaceToPixel(data, pixel);
@@ -70,7 +70,7 @@ public class TimeChart extends Chart<Long, Double>{
 				
 				if(datapoint.equals(highlightedDataPoint)){
 					g2d.fillOval(x-4, y-4, 8, 8);
-					displayHighlightedPoint(g2d, datapoint.getKey(), datapoint.getValue());
+					displayHighlightedPoint(g2d, series.getKey(), datapoint.getKey(), datapoint.getValue());
 				}
 				
 				if(Math.abs(x-previousX) > MIN_DISTANCE_BETWEEN_POINTS || Math.abs(y-previousY) > MIN_DISTANCE_BETWEEN_POINTS){

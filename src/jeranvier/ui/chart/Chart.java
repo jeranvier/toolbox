@@ -189,14 +189,14 @@ public class Chart <X extends Number, Y extends Number> extends JPanel{
 	protected void drawSeries(Graphics2D g2d) {
 		
 		int i = 0;
-		for(SortedMap<X, Y> series:data.values()){
+		for(Entry<String, SortedMap<X, Y>> series:data.entrySet()){
 			g2d.setColor(getColor(i));
 			Point2D previousPixel = new Point2D.Double(0, 0);
 			boolean previousVisible = true;
 			Point2D data = new Point2D.Double();
 			Point2D pixel = new Point2D.Double();
 			boolean firstPoint = true;
-			for(Entry<X, Y> datapoint : series.entrySet()){
+			for(Entry<X, Y> datapoint : series.getValue().entrySet()){
 				data.setLocation(datapoint.getKey().doubleValue(), datapoint.getValue().doubleValue());
 				currentSpace.spaceToPixel(data, pixel);
 				int x = (int) pixel.getX();
@@ -220,7 +220,7 @@ public class Chart <X extends Number, Y extends Number> extends JPanel{
 				
 				if(datapoint.equals(highlightedDataPoint)){
 					g2d.fillOval(x-4, y-4, 8, 8);
-					displayHighlightedPoint(g2d, datapoint.getKey(), datapoint.getValue());
+					displayHighlightedPoint(g2d, series.getKey(), datapoint.getKey(), datapoint.getValue());
 				}
 				
 				if(Math.abs(x-previousX) > MIN_DISTANCE_BETWEEN_POINTS || Math.abs(y-previousY) > MIN_DISTANCE_BETWEEN_POINTS){
@@ -239,11 +239,12 @@ public class Chart <X extends Number, Y extends Number> extends JPanel{
 	}
 
 
-	protected void displayHighlightedPoint(Graphics2D g2d, X x, Y y) {
+	protected void displayHighlightedPoint(Graphics2D g2d, String seriesLabel, X x, Y y) {
 		g2d.scale(1, -1);
 		g2d.translate(0, -this.getHeight());
-		g2d.drawString("x: "+this.horizontalAxisFormater().format(x), this.getWidth()-200, 20);
-		g2d.drawString("y: "+this.verticalAxisFormater().format(y), this.getWidth()-200, 50);
+		g2d.drawString(seriesLabel, this.getWidth()-200, 10);
+		g2d.drawString("x: "+this.horizontalAxisFormater().format(x), this.getWidth()-200, 25);
+		g2d.drawString("y: "+this.verticalAxisFormater().format(y), this.getWidth()-200, 40);
 		g2d.scale(1, -1);
 		g2d.translate(0, -this.getHeight());
 	}
