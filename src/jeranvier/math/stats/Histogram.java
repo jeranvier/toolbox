@@ -27,7 +27,7 @@ public class Histogram {
 		}
 	}
 	
-	public void populate(Number[] data){
+	public Histogram populate(Number[] data){
 		this.total = 0;
 		
 		Arrays.sort(data);
@@ -45,17 +45,17 @@ public class Histogram {
 			bins.put(selectedBin, bins.get(selectedBin) + 1);
 			total++;
 		}
-		
+		return this;
 	}
 	
-	public void populate(Collection< ? extends Number> data){
+	public Histogram populate(Collection< ? extends Number> data){
 		Number[] array = new Number[data.size()];
 		int i = 0;
 		for(Number number : data){
 			array[i] = number;
 			i++;
 		}
-		populate(array);
+		return populate(array);
 	}
 	
 	public String toString(){
