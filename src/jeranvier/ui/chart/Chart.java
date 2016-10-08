@@ -307,7 +307,7 @@ public class Chart <X extends Number, Y extends Number> extends JPanel{
 		return Chart.STROKE;
 	}
 	
-	private void computeBoundaries() {
+	protected void computeBoundaries() {
 		Double minX = Double.POSITIVE_INFINITY;
 		Double maxX = Double.NEGATIVE_INFINITY;
 		Double minY = Double.POSITIVE_INFINITY;
