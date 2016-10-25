@@ -9,7 +9,7 @@ import java.util.List;
 
 public class CSVHandler {
 	
-	public static final char TAB = '\t';
+	public static final char TAB = '\u0009';
 	public static final char EMPTY = '\u0000';
 	public static final char COMMA = ',';
 	private char separator;

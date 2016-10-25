@@ -101,6 +101,7 @@ public class CSVStreamingHandler{
 		boolean evenQuote = true;
 		for(int i = 0; i<line.length(); i++){
 			//if <separator> after an even # of <quote> we are done with the current value
+
 			if(line.charAt(i) == separator && evenQuote){
 				fields.add(decode(sb.toString()));
 				sb = new StringBuilder();
