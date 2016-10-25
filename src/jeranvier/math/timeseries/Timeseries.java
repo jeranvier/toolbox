@@ -74,7 +74,7 @@ public class Timeseries extends TreeMap<Long,Double> implements Serializable{
 		 return tsb.build();
 	}
 	
-	public Timeseries cumulativeplice(Timeseries that){
+	public Timeseries cumulativeSplice(Timeseries that){
 		 Builder tsb = new Timeseries.Builder();
 		 for(Map.Entry<Long, Double> element : this.entrySet()){
 			 tsb.put(element.getKey(), element.getValue());
@@ -141,6 +141,15 @@ public class Timeseries extends TreeMap<Long,Double> implements Serializable{
 		 }
 		 return tsb.build();
 	}
+	
+	public Timeseries filter(Function<Entry<Long,Double>, Double> function){
+		Timeseries.Builder tsb = new Timeseries.Builder();
+		for(Map.Entry<Long, Double> entry : this.entrySet()){
+			tsb.put(entry.getKey(), function.apply(entry));	
+		}
+		return tsb.build();
+	}
+
 	
 	//windowLength is in milliseconds
 	public Timeseries slidingWindow(long windowLength, SLIDING_WINDOW_TYPE type, Function<SortedMap<Long, Double>, Double> function){
@@ -315,6 +324,10 @@ public class Timeseries extends TreeMap<Long,Double> implements Serializable{
 
 		public void put(Long key, double value) {
 			data.put(key, value);
+		}
+		
+		public boolean containsKey(Long key){
+			return data.containsKey(key);
 		}
 		
 		public void remove(Long key) {
