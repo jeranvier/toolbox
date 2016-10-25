@@ -4,6 +4,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.SortedMap;
 import java.util.TreeMap;
 
 public class Histogram {
@@ -20,7 +21,7 @@ public class Histogram {
 	}
 	
 	private void determinateBuckets(int numberOfBins, Number min, Number max){
-		this.step = Math.ceil((max.doubleValue()-min.doubleValue())/numberOfBins);
+		this.step = (max.doubleValue()-min.doubleValue())/numberOfBins;
 		bins = new TreeMap<Double, Integer>();
 		for(int i = 0; i <numberOfBins; i++){
 			bins.put(min.doubleValue()+i*step, 0);
@@ -31,6 +32,7 @@ public class Histogram {
 		this.total = 0;
 		
 		Arrays.sort(data);
+		System.out.println(data[0]+" ; "+data[data.length-1]);
 		determinateBuckets(this.numberOfBins, data[0], data[data.length-1]);
 		
 		for(Number element : data){
@@ -71,6 +73,14 @@ public class Histogram {
 	
 	public void setNormalized(boolean normalized){
 		this.normalized = normalized;
+	}
+
+	public SortedMap<Double, Double> toDoubleMap() {
+		SortedMap<Double, Double> map = new TreeMap<>();
+		for(Entry<Double, Integer> bin : this.bins.entrySet()){
+			map.put(bin.getKey(), (double)bin.getValue());
+		}
+		return map;
 	}
 
 }

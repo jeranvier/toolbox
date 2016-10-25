@@ -212,38 +212,122 @@ public class ConfusionMatrix <T>{
 		}
 	}
 	
-	public static void main(String[] arg){
-		ConfusionMatrix<Integer> cm = new ConfusionMatrix<Integer>();
-		cm.add(1, 1);
-		cm.add(1, 1);
-		cm.add(1, 1);
-		cm.add(2, 1);
-		cm.add(2, 2);
-		cm.add(2, 2);
-		cm.add(2, 2);
-		cm.add(2, 3);
-		cm.add(3, 2);
-		cm.add(3, 3);
-		cm.add(3, 3);
-		cm.add(1, 3);
-		cm.display();
-		
-		System.out.println("\nprecisions");
-		for(Entry<Integer, Double> precision : cm.computeClassesPrecision().entrySet()){
-			System.out.println(precision.getKey()+" : "+precision.getValue());
+	public void displaySummary() {
+		T classofInterest = getClasses().iterator().next();
+		System.out.println("Class of interest: "+classofInterest);
+		System.out.println("Accuracy: "+getAccuracy());
+		System.out.println("Sensitivity: "+getSensitivity(classofInterest));
+		System.out.println("specificity: "+getSpecificity(classofInterest));
+		System.out.println("precision: "+getPrecision(classofInterest));
+		System.out.println("recall: "+getRecall(classofInterest));
+	}
+	
+	public double getPrecision(T daClass) {
+		int tp = getTP(daClass);
+		int fp = getFP(daClass);
+		return ((double)tp)/(tp+fp);
+	}
+	
+	public double getRecall(T daClass) {
+		int tp = getTP(daClass);
+		int fn = getFN(daClass);
+		return ((double)tp)/(tp+fn);
+	}
+	
+	public double getAccuracy() {
+		int tp = 0;
+		Set<T> classes = getClasses();
+		for(T currentClass : classes){
+			tp += getTP(currentClass);
 		}
+		return ((double)tp)/getPopulation();
+	}
+	
+	public double getSensitivity(T daClass) {
+		int tp = getTP(daClass);
+		int fn = getFN(daClass);
+		return ((double)tp)/(tp+fn);
+
+	}
+	
+	public double getSpecificity(T daClass) {
+		int tn = getTN(daClass);
+		int fp = getFP(daClass);
+		return ((double)tn)/(fp+tn);
+
+	}
+	
+	public int getPopulation() {
 		
-		System.out.println("\nrecalls");
-		for(Entry<Integer, Double> recall : cm.computeClassesRecall().entrySet()){
-			System.out.println(recall.getKey()+" : "+recall.getValue());
+		int n = 0;
+		
+		for(int value : matrix.values()){
+			n += value;
 		}
+		return n;
+	}
+
+	public int getTP(T daClass) {
+	
+	double tp = 0.0;
+	
+	Coordinates<T> c = new Coordinates<>(daClass, daClass);
+	if(matrix.containsKey(c)){
+		return matrix.get(c);
+	}else{
+		return 0;
+	}
+}
+	
+	public int getTN(T daClass) {
+		Set<T> classes = getClasses();
 		
-		System.out.println("\nweights");
-		for(Entry<Integer, Integer> weight : cm.computeClassesWeights().entrySet()){
-			System.out.println(weight.getKey()+" : "+weight.getValue());
+		int tn = 0;
+		
+		for(T currentClass : classes){
+			if(currentClass.equals(daClass)){
+				continue;
+			}
+			
+			Coordinates<T> c = new Coordinates<>(currentClass, currentClass);
+			if(matrix.containsKey(c)){
+				tn += matrix.get(c);
+			}
 		}
+		return tn;	
+	}
+	
+	public int getFP(T daClass) {
+		Set<T> classes = getClasses();
 		
-		System.out.println("\nPrecision: "+cm.computePrecision());
-		System.out.println("Recall: "+cm.computeRecall());
+		int fp = 0;
+		
+		for(T currentClass : classes){
+			if(currentClass.equals(daClass)){
+				continue;
+			}
+			Coordinates<T> c = new Coordinates<>(currentClass, daClass);
+			if(matrix.containsKey(c)){
+				fp += matrix.get(c);
+			}
+		}
+		return fp;	
+	}
+	
+	public int getFN(T daClass) {
+		Set<T> classes = getClasses();
+		
+		int fn = 0;
+		
+		for(T currentClass : classes){
+			if(currentClass.equals(daClass)){
+				continue;
+			}
+			Coordinates<T> c = new Coordinates<>(daClass,currentClass);
+			if(matrix.containsKey(c)){
+				fn += matrix.get(c);
+			}
+		}
+		return fn;	
 	}
 }
