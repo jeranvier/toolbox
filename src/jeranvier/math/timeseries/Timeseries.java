@@ -63,6 +63,23 @@ public class Timeseries extends TreeMap<Long,Double> implements Serializable{
 		 return tsb.build();
 	}
 	
+	public double integrate(){
+		double sum = 0.0;
+		Entry<Long, Double> previousEntry = null;
+		for(Entry<Long, Double> currentEntry: this.entrySet()){
+			if(previousEntry != null){
+				double y1 = previousEntry.getValue();
+				double y2 = currentEntry.getValue();
+				long x1 = previousEntry.getKey();
+				long x2 = currentEntry.getKey();
+				
+				sum += (y1+y2)*(x2-x1)/2;
+			}
+			previousEntry = currentEntry;
+		}
+		return sum;
+	}
+	
 	public Timeseries splice(Timeseries that){
 		 Builder tsb = new Timeseries.Builder();
 		 for(Map.Entry<Long, Double> element : this.entrySet()){
