@@ -499,5 +499,19 @@ public class Timeseries extends TreeMap<Long,Double> implements Serializable{
 		
 		return tsb.build();
 	}
+
+	//stretch a timeseries of length l to a TS of length new L;
+	public Timeseries stretch(long newL) {
+		long start = this.firstKey();
+		long l = this.lastKey()-start;
+		double ratio = ((double)newL)/l;
+		Timeseries.Builder tsb = new Timeseries.Builder();
+		for(Entry<Long, Double> entry : this.entrySet()){
+			long t = entry.getKey();
+			long newT = (long) (start +(t-start)*ratio);
+			tsb.put(newT, entry.getValue());
+		}
+		return tsb.build();
+	}
 	
 }
