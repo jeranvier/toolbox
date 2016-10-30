@@ -159,7 +159,7 @@ public class Timeseries extends TreeMap<Long,Double> implements Serializable{
 		 return tsb.build();
 	}
 	
-	public Timeseries filter(Function<Entry<Long,Double>, Double> function){
+	public Timeseries process(Function<Entry<Long,Double>, Double> function){
 		Timeseries.Builder tsb = new Timeseries.Builder();
 		for(Map.Entry<Long, Double> entry : this.entrySet()){
 			tsb.put(entry.getKey(), function.apply(entry));	
